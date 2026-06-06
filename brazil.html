@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brazil — FIFA World Cup 2026 Squad</title>
+  <meta name="description" content="Brazil's full 26-player squad for the 2026 FIFA World Cup — players, shirt numbers and photos.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header__eyebrow">FIFA World Cup 2026</div>
+    <h1 class="site-header__title">Brazil</h1>
+    <p class="site-header__subtitle">Coach: <strong style="color:#c8a84b;">Carlo Ancelotti</strong> &nbsp;·&nbsp; Group C</p>
+  </header>
+
+  <main>
+    <a class="back-link" href="index.html">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      All teams
+    </a>
+
+    <div class="team-header">
+      <img class="team-header__flag" src="https://flagcdn.com/w80/br.png" alt="Brazil flag">
+      <div class="team-header__info">
+        <h2 class="team-header__title">Brazil</h2>
+        <p class="team-header__manager">Manager: <strong>Carlo Ancelotti</strong></p>
+        <p class="team-header__manager" style="margin-top:0.2rem;">Group C — Morocco · Scotland · Haiti</p>
+      </div>
+    </div>
+
+    <div id="squad-container"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>FIFA World Cup 2026 · USA, Canada &amp; Mexico · 48 Teams</p>
+  </footer>
+
+  <script>
+    /* ─── Squad data ──────────────────────────────────────────────
+       Sources: CBF official announcement 18 May 2026, confirmed by
+       Footy Headlines, DAZN, Sports Illustrated, Yahoo Sports.
+       Wikipedia article titles used for headshot lookup.
+    ─────────────────────────────────────────────────────────────── */
+    const squad = {
+      Goalkeepers: [
+        { number: 1,  name: "Alisson",   fullName: "Alisson Becker",              club: "Liverpool",            wiki: "Alisson_Becker" },
+        { number: 12, name: "Weverton",  fullName: "Weverton Pereira da Silva",   club: "Grêmio",               wiki: "Weverton_(footballer)" },
+        { number: 23, name: "Ederson",   fullName: "Ederson Moraes",              club: "Fenerbahçe",           wiki: "Ederson_(footballer,_born_1993)" }
+      ],
+      Defenders: [
+        { number: 2,  name: "Wesley",           fullName: "Wesley",                        club: "AS Roma",              wiki: "Wesley_(footballer,_born_2001)" },
+        { number: 3,  name: "Gabriel Magalhães", fullName: "Gabriel Magalhães",            club: "Arsenal",              wiki: "Gabriel_Magalhães" },
+        { number: 4,  name: "Marquinhos",       fullName: "Marcos Aoás Corrêa",           club: "Paris Saint-Germain",  wiki: "Marquinhos_(footballer)" },
+        { number: 6,  name: "Alex Sandro",      fullName: "Alex Sandro Lobo Silva",       club: "Flamengo",             wiki: "Alex_Sandro" },
+        { number: 13, name: "Danilo",           fullName: "Danilo Luiz da Silva",         club: "Flamengo",             wiki: "Danilo_(footballer,_born_1991)" },
+        { number: 14, name: "Bremer",           fullName: "Gleison Bremer Silva Nascimento", club: "Juventus",          wiki: "Gleison_Bremer" },
+        { number: 15, name: "Léo Pereira",      fullName: "Léo Pereira",                 club: "Flamengo",             wiki: "Léo_Pereira_(Brazilian_footballer)" },
+        { number: 16, name: "Douglas Santos",   fullName: "Douglas Santos",               club: "Zenit St. Petersburg", wiki: "Douglas_Santos_(footballer)" },
+        { number: 24, name: "Roger Ibañez",     fullName: "Roger Ibañez da Silva Neves", club: "Al-Ahli",              wiki: "Roger_Ibañez" }
+      ],
+      Midfielders: [
+        { number: 5,  name: "Casemiro",       fullName: "Carlos Henrique Casimiro",  club: "Manchester United", wiki: "Casemiro" },
+        { number: 8,  name: "Bruno Guimarães", fullName: "Bruno Guimarães Rodrigues Moura", club: "Newcastle United", wiki: "Bruno_Guimarães" },
+        { number: 17, name: "Fabinho",        fullName: "Fábio Henrique Tavares",   club: "Al-Ittihad",        wiki: "Fabinho_(footballer,_born_1993)" },
+        { number: 18, name: "Danilo Barbosa", fullName: "Danilo Barbosa",           club: "Botafogo",          wiki: "Danilo_Barbosa" },
+        { number: 20, name: "Paquetá",        fullName: "Lucas Tolentino Coelho de Lima", club: "Flamengo",    wiki: "Lucas_Paquetá" }
+      ],
+      Forwards: [
+        { number: 7,  name: "Vinícius Jr",      fullName: "Vinicius José Paixão de Oliveira Júnior", club: "Real Madrid",  wiki: "Vinícius_Júnior" },
+        { number: 9,  name: "Matheus Cunha",    fullName: "Matheus Santos Carneiro Cunha",           club: "Manchester United", wiki: "Matheus_Cunha" },
+        { number: 10, name: "Neymar",           fullName: "Neymar da Silva Santos Júnior",           club: "Santos",       wiki: "Neymar" },
+        { number: 11, name: "Raphinha",         fullName: "Raphael Dias Belloli",                    club: "Barcelona",    wiki: "Raphinha" },
+        { number: 19, name: "Endrick",          fullName: "Endrick Felipe Moreira de Sousa",         club: "Real Madrid",  wiki: "Endrick" },
+        { number: 21, name: "Luiz Henrique",    fullName: "Luiz Henrique Bié",                       club: "Zenit St. Petersburg", wiki: "Luiz_Henrique_(footballer,_born_2001)" },
+        { number: 22, name: "Martinelli",       fullName: "Gabriel Silva Martinelli",                club: "Arsenal",      wiki: "Gabriel_Martinelli" },
+        { number: 25, name: "Igor Thiago",      fullName: "Igor Thiago",                             club: "Brentford",    wiki: "Igor_Thiago" },
+        { number: 26, name: "Rayan",            fullName: "Rayan",                                   club: "Bournemouth",  wiki: "Rayan_(footballer)" }
+      ]
+    };
+
+    /* ─── Helpers ─────────────────────────────────────────────── */
+
+    function initials(name) {
+      return name.split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    }
+
+    async function fetchWikiImage(wikiTitle) {
+      const cacheKey = `wc26_${wikiTitle}`;
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached !== null) return cached || null;
+
+      try {
+        const url =
+          `https://en.wikipedia.org/w/api.php?action=query` +
+          `&titles=${encodeURIComponent(wikiTitle)}` +
+          `&prop=pageimages&format=json&pithumbsize=300&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const pages = data.query.pages;
+        const page = Object.values(pages)[0];
+        const src = page.thumbnail ? page.thumbnail.source : "";
+        sessionStorage.setItem(cacheKey, src);
+        return src || null;
+      } catch {
+        return null;
+      }
+    }
+
+    /* ─── Build cards ─────────────────────────────────────────── */
+
+    function buildCard(player) {
+      const abbr = initials(player.name);
+      const card = document.createElement("div");
+      card.className = "player-card";
+      card.innerHTML = `
+        <div class="player-card__photo-wrap">
+          <div class="player-card__photo-placeholder" aria-hidden="true">${abbr}</div>
+          <img class="player-card__photo" alt="${player.fullName}" loading="lazy" style="display:none;">
+          <span class="player-card__number">${player.number}</span>
+        </div>
+        <span class="player-card__name">${player.name}</span>
+        <span class="player-card__club">${player.club}</span>
+      `;
+
+      const img = card.querySelector("img");
+      const placeholder = card.querySelector(".player-card__photo-placeholder");
+
+      fetchWikiImage(player.wiki).then(src => {
+        if (src) {
+          img.src = src;
+          img.style.display = "block";
+          placeholder.style.display = "none";
+          img.onerror = () => {
+            img.style.display = "none";
+            placeholder.style.display = "flex";
+          };
+        }
+      });
+
+      return card;
+    }
+
+    /* ─── Render groups ───────────────────────────────────────── */
+
+    const container = document.getElementById("squad-container");
+
+    Object.entries(squad).forEach(([posLabel, players]) => {
+      const section = document.createElement("section");
+      section.className = "position-group";
+
+      const title = document.createElement("h3");
+      title.className = "position-group__title";
+      title.textContent = posLabel;
+      section.appendChild(title);
+
+      const grid = document.createElement("div");
+      grid.className = "players-grid";
+      players.forEach(p => grid.appendChild(buildCard(p)));
+      section.appendChild(grid);
+
+      container.appendChild(section);
+    });
+  </script>
+
+</body>
+</html>

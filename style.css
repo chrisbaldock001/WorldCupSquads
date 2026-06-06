@@ -1,0 +1,366 @@
+:root {
+  --bg: #0d1b2a;
+  --bg-secondary: #0a1525;
+  --card-bg: #ffffff;
+  --card-disabled-bg: rgba(255, 255, 255, 0.07);
+  --card-disabled-border: rgba(255, 255, 255, 0.1);
+  --card-disabled-text: rgba(255, 255, 255, 0.3);
+  --card-disabled-flag: 0.25;
+  --accent: #c8a84b;
+  --text: #f0f0f0;
+  --text-muted: rgba(255, 255, 255, 0.55);
+  --card-text: #1a1a2e;
+  --card-subtext: #4a5568;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ─── Header ─────────────────────────────────────────────────── */
+
+.site-header {
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 100%);
+  border-bottom: 1px solid rgba(200, 168, 75, 0.25);
+  padding: 2.5rem 1rem 2rem;
+  text-align: center;
+}
+
+.site-header__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+.site-header__title {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.site-header__subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ─── Back link ───────────────────────────────────────────────── */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  transition: opacity 0.15s;
+}
+
+.back-link:hover {
+  opacity: 0.75;
+}
+
+/* ─── Main layout ─────────────────────────────────────────────── */
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+/* ─── Confederation sections ──────────────────────────────────── */
+
+.confederation {
+  margin-bottom: 2.5rem;
+}
+
+.confederation__title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(200, 168, 75, 0.18);
+}
+
+/* ─── Countries grid ──────────────────────────────────────────── */
+
+.countries-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* ─── Country card — shared ───────────────────────────────────── */
+
+.country-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  width: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+@media (min-width: 480px) {
+  .country-card { width: calc(50% - 0.3rem); }
+}
+
+@media (min-width: 768px) {
+  .country-card { width: calc(33.333% - 0.4rem); }
+}
+
+@media (min-width: 1024px) {
+  .country-card { width: calc(25% - 0.45rem); }
+}
+
+/* ─── Enabled card ────────────────────────────────────────────── */
+
+a.country-card {
+  background: var(--card-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a.country-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+a.country-card:active {
+  transform: translateY(0);
+}
+
+a.country-card .country-card__name {
+  color: var(--card-text);
+  font-weight: 700;
+}
+
+/* ─── Disabled card ───────────────────────────────────────────── */
+
+div.country-card {
+  background: var(--card-disabled-bg);
+  border: 1px solid var(--card-disabled-border);
+  cursor: not-allowed;
+}
+
+div.country-card .country-card__flag {
+  opacity: var(--card-disabled-flag);
+}
+
+div.country-card .country-card__name {
+  color: var(--card-disabled-text);
+  font-weight: 500;
+}
+
+/* ─── Flag ────────────────────────────────────────────────────── */
+
+.country-card__flag {
+  width: 34px;
+  height: auto;
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* ─── Country name ────────────────────────────────────────────── */
+
+.country-card__name {
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+/* ─── Team page header ────────────────────────────────────────── */
+
+.team-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(200, 168, 75, 0.2);
+  flex-wrap: wrap;
+}
+
+.team-header__flag {
+  width: 72px;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.team-header__info {}
+
+.team-header__title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.team-header__manager {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+.team-header__manager strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ─── Position group ──────────────────────────────────────────── */
+
+.position-group {
+  margin-bottom: 2.5rem;
+}
+
+.position-group__title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(200, 168, 75, 0.18);
+}
+
+/* ─── Players grid ────────────────────────────────────────────── */
+
+.players-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+/* ─── Player card ─────────────────────────────────────────────── */
+
+.player-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: calc(50% - 0.625rem);
+}
+
+@media (min-width: 480px) {
+  .player-card { width: calc(33.333% - 0.833rem); }
+}
+
+@media (min-width: 640px) {
+  .player-card { width: calc(25% - 0.9375rem); }
+}
+
+@media (min-width: 900px) {
+  .player-card { width: calc(16.666% - 1.04rem); }
+}
+
+.player-card__photo-wrap {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin-bottom: 0.6rem;
+}
+
+@media (min-width: 640px) {
+  .player-card__photo-wrap { width: 100px; height: 100px; }
+}
+
+.player-card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 3px solid var(--accent);
+  background-color: #1e2d3d;
+  display: block;
+}
+
+.player-card__number {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--accent);
+  color: #1a1a2e;
+  font-size: 0.7rem;
+  font-weight: 800;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg);
+  line-height: 1;
+}
+
+.player-card__name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.player-card__club {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+  line-height: 1.3;
+}
+
+/* ─── Placeholder photo ───────────────────────────────────────── */
+
+.player-card__photo-placeholder {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────── */
+
+.site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.25);
+}
