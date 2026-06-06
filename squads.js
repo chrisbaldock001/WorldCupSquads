@@ -8,11 +8,46 @@ const SQUADS = {
 
   "usa": {
     name: "United States",
-    coach: "",
+    coach: "Mauricio Pochettino",
     flag: "us",
-    group: "",
-    groupTeams: "",
-    players: {}
+    group: "D",
+    groupTeams: "Paraguay · Australia · Türkiye",
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "Turner",  fullName: "Matt Turner",   club: "New England Revolution", wiki: "Matt_Turner_(soccer)" },
+        { number: 24, name: "Freese",  fullName: "Matt Freese",   club: "New York City FC",       wiki: "Matt_Freese" },
+        { number: 25, name: "Brady",   fullName: "Chris Brady",   club: "Chicago Fire FC",        wiki: "Chris_Brady_(goalkeeper,_born_2003)" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "Dest",        fullName: "Sergiño Dest",      club: "PSV Eindhoven",            wiki: "Sergiño_Dest" },
+        { number: 3,  name: "Richards",    fullName: "Chris Richards",    club: "Crystal Palace",           wiki: "Chris_Richards_(soccer)" },
+        { number: 5,  name: "Robinson",    fullName: "Antonee Robinson",  club: "Fulham",                   wiki: "Antonee_Robinson" },
+        { number: 6,  name: "Trusty",      fullName: "Auston Trusty",     club: "Celtic",                   wiki: "Auston_Trusty" },
+        { number: 12, name: "M. Robinson", fullName: "Miles Robinson",    club: "FC Cincinnati",            wiki: "Miles_Robinson_(soccer)" },
+        { number: 13, name: "Ream",        fullName: "Tim Ream",          club: "Charlotte FC",             wiki: "Tim_Ream" },
+        { number: 16, name: "Freeman",     fullName: "Alex Freeman",      club: "Villarreal",               wiki: "Alex_Freeman_(soccer)" },
+        { number: 18, name: "Arfsten",     fullName: "Max Arfsten",       club: "Columbus Crew",            wiki: "Max_Arfsten" },
+        { number: 22, name: "McKenzie",    fullName: "Mark McKenzie",     club: "Toulouse",                 wiki: "Mark_McKenzie_(soccer)" },
+        { number: 23, name: "Scally",      fullName: "Joe Scally",        club: "Borussia Mönchengladbach", wiki: "Joe_Scally" }
+      ],
+      "Midfielders": [
+        { number: 4,  name: "Adams",     fullName: "Tyler Adams",         club: "AFC Bournemouth",          wiki: "Tyler_Adams_(soccer)" },
+        { number: 7,  name: "Reyna",     fullName: "Gio Reyna",           club: "Borussia Mönchengladbach", wiki: "Giovanni_Reyna" },
+        { number: 8,  name: "McKennie",  fullName: "Weston McKennie",     club: "Juventus",                 wiki: "Weston_McKennie" },
+        { number: 14, name: "Berhalter", fullName: "Sebastian Berhalter", club: "Vancouver Whitecaps FC",   wiki: "Sebastian_Berhalter" },
+        { number: 15, name: "Roldan",    fullName: "Cristian Roldan",     club: "Seattle Sounders FC",      wiki: "Cristian_Roldan" },
+        { number: 17, name: "Tillman",   fullName: "Malik Tillman",       club: "Bayer Leverkusen",         wiki: "Malik_Tillman" }
+      ],
+      "Forwards": [
+        { number: 9,  name: "Pepi",     fullName: "Ricardo Pepi",       club: "PSV Eindhoven",        wiki: "Ricardo_Pepi" },
+        { number: 10, name: "Pulisic",  fullName: "Christian Pulisic",  club: "AC Milan",             wiki: "Christian_Pulisic" },
+        { number: 11, name: "Aaronson", fullName: "Brenden Aaronson",   club: "Leeds United",         wiki: "Brenden_Aaronson" },
+        { number: 19, name: "Wright",   fullName: "Haji Wright",         club: "Coventry City",        wiki: "Haji_Wright" },
+        { number: 20, name: "Balogun",  fullName: "Folarin Balogun",    club: "AS Monaco",            wiki: "Folarin_Balogun" },
+        { number: 21, name: "Weah",     fullName: "Timothy Weah",       club: "Olympique Marseille",  wiki: "Timothy_Weah" },
+        { number: 26, name: "Zendejas", fullName: "Alejandro Zendejas", club: "Club América",         wiki: "Alejandro_Zendejas" }
+      ]
+    }
   },
 
   "mexico": {
