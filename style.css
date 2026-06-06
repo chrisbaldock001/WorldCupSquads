@@ -31,8 +31,6 @@ body {
   line-height: 1.5;
 }
 
-/* ─── Header ─────────────────────────────────────────────────── */
-
 .site-header {
   background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 100%);
   border-bottom: 1px solid rgba(200, 168, 75, 0.25);
@@ -63,8 +61,6 @@ body {
   margin-top: 0.5rem;
 }
 
-/* ─── Back link ───────────────────────────────────────────────── */
-
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -77,11 +73,7 @@ body {
   transition: opacity 0.15s;
 }
 
-.back-link:hover {
-  opacity: 0.75;
-}
-
-/* ─── Main layout ─────────────────────────────────────────────── */
+.back-link:hover { opacity: 0.75; }
 
 main {
   max-width: 1200px;
@@ -89,11 +81,7 @@ main {
   padding: 2rem 1rem 4rem;
 }
 
-/* ─── Confederation sections ──────────────────────────────────── */
-
-.confederation {
-  margin-bottom: 2.5rem;
-}
+.confederation { margin-bottom: 2.5rem; }
 
 .confederation__title {
   font-size: 0.72rem;
@@ -106,15 +94,11 @@ main {
   border-bottom: 1px solid rgba(200, 168, 75, 0.18);
 }
 
-/* ─── Countries grid ──────────────────────────────────────────── */
-
 .countries-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
 }
-
-/* ─── Country card — shared ───────────────────────────────────── */
 
 .country-card {
   display: flex;
@@ -126,19 +110,9 @@ main {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-@media (min-width: 480px) {
-  .country-card { width: calc(50% - 0.3rem); }
-}
-
-@media (min-width: 768px) {
-  .country-card { width: calc(33.333% - 0.4rem); }
-}
-
-@media (min-width: 1024px) {
-  .country-card { width: calc(25% - 0.45rem); }
-}
-
-/* ─── Enabled card ────────────────────────────────────────────── */
+@media (min-width: 480px) { .country-card { width: calc(50% - 0.3rem); } }
+@media (min-width: 768px) { .country-card { width: calc(33.333% - 0.4rem); } }
+@media (min-width: 1024px) { .country-card { width: calc(25% - 0.45rem); } }
 
 a.country-card {
   background: var(--card-bg);
@@ -152,16 +126,12 @@ a.country-card:hover {
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
 }
 
-a.country-card:active {
-  transform: translateY(0);
-}
+a.country-card:active { transform: translateY(0); }
 
 a.country-card .country-card__name {
   color: var(--card-text);
   font-weight: 700;
 }
-
-/* ─── Disabled card ───────────────────────────────────────────── */
 
 div.country-card {
   background: var(--card-disabled-bg);
@@ -169,16 +139,8 @@ div.country-card {
   cursor: not-allowed;
 }
 
-div.country-card .country-card__flag {
-  opacity: var(--card-disabled-flag);
-}
-
-div.country-card .country-card__name {
-  color: var(--card-disabled-text);
-  font-weight: 500;
-}
-
-/* ─── Flag ────────────────────────────────────────────────────── */
+div.country-card .country-card__flag { opacity: var(--card-disabled-flag); }
+div.country-card .country-card__name { color: var(--card-disabled-text); font-weight: 500; }
 
 .country-card__flag {
   width: 34px;
@@ -188,14 +150,7 @@ div.country-card .country-card__name {
   display: block;
 }
 
-/* ─── Country name ────────────────────────────────────────────── */
-
-.country-card__name {
-  font-size: 0.9rem;
-  line-height: 1.2;
-}
-
-/* ─── Team page header ────────────────────────────────────────── */
+.country-card__name { font-size: 0.9rem; line-height: 1.2; }
 
 .team-header {
   display: flex;
@@ -213,8 +168,6 @@ div.country-card .country-card__name {
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
-
-.team-header__info {}
 
 .team-header__title {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
@@ -235,11 +188,7 @@ div.country-card .country-card__name {
   font-weight: 600;
 }
 
-/* ─── Position group ──────────────────────────────────────────── */
-
-.position-group {
-  margin-bottom: 2.5rem;
-}
+.position-group { margin-bottom: 2.5rem; }
 
 .position-group__title {
   font-size: 0.72rem;
@@ -252,15 +201,11 @@ div.country-card .country-card__name {
   border-bottom: 1px solid rgba(200, 168, 75, 0.18);
 }
 
-/* ─── Players grid ────────────────────────────────────────────── */
-
 .players-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 1.25rem;
 }
-
-/* ─── Player card ─────────────────────────────────────────────── */
 
 .player-card {
   display: flex;
@@ -270,17 +215,9 @@ div.country-card .country-card__name {
   width: calc(50% - 0.625rem);
 }
 
-@media (min-width: 480px) {
-  .player-card { width: calc(33.333% - 0.833rem); }
-}
-
-@media (min-width: 640px) {
-  .player-card { width: calc(25% - 0.9375rem); }
-}
-
-@media (min-width: 900px) {
-  .player-card { width: calc(16.666% - 1.04rem); }
-}
+@media (min-width: 480px) { .player-card { width: calc(33.333% - 0.833rem); } }
+@media (min-width: 640px) { .player-card { width: calc(25% - 0.9375rem); } }
+@media (min-width: 900px) { .player-card { width: calc(16.666% - 1.04rem); } }
 
 .player-card__photo-wrap {
   position: relative;
@@ -289,9 +226,7 @@ div.country-card .country-card__name {
   margin-bottom: 0.6rem;
 }
 
-@media (min-width: 640px) {
-  .player-card__photo-wrap { width: 100px; height: 100px; }
-}
+@media (min-width: 640px) { .player-card__photo-wrap { width: 100px; height: 100px; } }
 
 .player-card__photo {
   position: absolute;
@@ -338,8 +273,6 @@ div.country-card .country-card__name {
   line-height: 1.3;
 }
 
-/* ─── Placeholder photo ───────────────────────────────────────── */
-
 .player-card__photo-placeholder {
   position: absolute;
   inset: 0;
@@ -354,8 +287,6 @@ div.country-card .country-card__name {
   font-weight: 900;
   letter-spacing: -0.02em;
 }
-
-/* ─── Footer ──────────────────────────────────────────────────── */
 
 .site-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.07);
