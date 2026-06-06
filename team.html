@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA World Cup 2026 Squad</title>
+  <meta name="description" content="FIFA World Cup 2026 squad — players, shirt numbers and photos.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header__eyebrow">FIFA World Cup 2026</div>
+    <h1 class="site-header__title" id="hdr-name">Loading…</h1>
+    <p class="site-header__subtitle" id="hdr-sub"></p>
+  </header>
+
+  <main>
+    <a class="back-link" href="index.html">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      All teams
+    </a>
+
+    <div class="team-header">
+      <img class="team-header__flag" id="hdr-flag" src="" alt="">
+      <div class="team-header__info">
+        <h2 class="team-header__title" id="hdr-title"></h2>
+        <p class="team-header__manager" id="hdr-coach"></p>
+        <p class="team-header__manager" id="hdr-group" style="margin-top:.2rem;"></p>
+      </div>
+    </div>
+
+    <div id="squad-container"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>FIFA World Cup 2026 · USA, Canada &amp; Mexico · 48 Teams</p>
+  </footer>
+
+  <script src="squads.js"></script>
+  <script>
+    /* ── Helpers ─────────────────────────────────────────────── */
+
+    function initials(name) {
+      return name.split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    }
+
+    async function fetchWikiImage(title) {
+      const key = "wc26_" + title;
+      const hit = sessionStorage.getItem(key);
+      if (hit !== null) return hit || null;
+      try {
+        const url = "https://en.wikipedia.org/w/api.php?action=query"
+          + "&titles=" + encodeURIComponent(title)
+          + "&prop=pageimages&format=json&pithumbsize=300&origin=*";
+        const data = await (await fetch(url)).json();
+        const page = Object.values(data.query.pages)[0];
+        const src = page.thumbnail ? page.thumbnail.source : "";
+        sessionStorage.setItem(key, src);
+        return src || null;
+      } catch { return null; }
+    }
+
+    function buildCard(player) {
+      const abbr = initials(player.name);
+      const card = document.createElement("div");
+      card.className = "player-card";
+      card.innerHTML = `
+        <div class="player-card__photo-wrap">
+          <div class="player-card__photo-placeholder" aria-hidden="true">${abbr}</div>
+          <img class="player-card__photo" alt="${player.fullName || player.name}" loading="lazy" style="display:none;">
+          <span class="player-card__number">${player.number}</span>
+        </div>
+        <span class="player-card__name">${player.name}</span>
+        <span class="player-card__club">${player.club || ""}</span>
+      `;
+
+      const img = card.querySelector("img");
+      const ph  = card.querySelector(".player-card__photo-placeholder");
+
+      function showImg(src) {
+        img.src = src;
+        img.style.display = "block";
+        ph.style.display  = "none";
+        img.onerror = () => { img.style.display = "none"; ph.style.display = "flex"; };
+      }
+
+      if (player.image) {
+        showImg(player.image);
+      } else if (player.wiki) {
+        fetchWikiImage(player.wiki).then(src => { if (src) showImg(src); });
+      }
+
+      return card;
+    }
+
+    /* ── Render ──────────────────────────────────────────────── */
+
+    const teamKey = new URLSearchParams(window.location.search).get("team") || "";
+    const team    = SQUADS[teamKey];
+
+    if (!team) {
+      document.getElementById("hdr-name").textContent = "Team not found";
+    } else {
+      document.title = team.name + " — FIFA World Cup 2026 Squad";
+
+      document.getElementById("hdr-name").textContent  = team.name;
+      document.getElementById("hdr-flag").src          = `https://flagcdn.com/w80/${team.flag}.png`;
+      document.getElementById("hdr-flag").alt          = team.name + " flag";
+      document.getElementById("hdr-title").textContent = team.name;
+
+      const coachEl = document.getElementById("hdr-coach");
+      if (team.coach) {
+        coachEl.innerHTML = `Manager: <strong>${team.coach}</strong>`;
+      }
+
+      const subEl = document.getElementById("hdr-sub");
+      const groupEl = document.getElementById("hdr-group");
+      if (team.coach) subEl.innerHTML = `Coach: <strong style="color:#c8a84b;">${team.coach}</strong>`;
+      if (team.group) {
+        subEl.innerHTML += `&nbsp;·&nbsp; Group ${team.group}`;
+        groupEl.textContent = `Group ${team.group} — ${team.groupTeams}`;
+      }
+
+      const container = document.getElementById("squad-container");
+      const hasPayers = team.players && Object.keys(team.players).length > 0;
+
+      if (!hasPayers) {
+        const msg = document.createElement("p");
+        msg.style.cssText = "color:rgba(255,255,255,.45);margin-top:2rem;font-size:.95rem;";
+        msg.textContent = "Squad data coming soon.";
+        container.appendChild(msg);
+      } else {
+        Object.entries(team.players).forEach(([label, players]) => {
+          const section = document.createElement("section");
+          section.className = "position-group";
+
+          const h = document.createElement("h3");
+          h.className = "position-group__title";
+          h.textContent = label;
+          section.appendChild(h);
+
+          const grid = document.createElement("div");
+          grid.className = "players-grid";
+          players.forEach(p => grid.appendChild(buildCard(p)));
+          section.appendChild(grid);
+
+          container.appendChild(section);
+        });
+      }
+    }
+  </script>
+
+</body>
+</html>
