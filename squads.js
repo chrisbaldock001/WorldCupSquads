@@ -334,7 +334,7 @@ const SQUADS = {
       ],
       "Defenders": [
         { number: 2,  name: "Pubill",    fullName: "Marc Pubill",        club: "Almería",          wiki: "Marc_Pubill" },
-        { number: 3,  name: "Grimaldo",  fullName: "Alejandro Grimaldo", club: "Bayer Leverkusen", wiki: "Alejandro_Grimaldo" },
+        { number: 3,  name: "Grimaldo",  fullName: "Alejandro Grimaldo", club: "Bayer Leverkusen", wiki: "Álex_Grimaldo" },
         { number: 4,  name: "E. García", fullName: "Eric García",        club: "Girona",           wiki: "Eric_García_(footballer,_born_2001)" },
         { number: 12, name: "Porro",     fullName: "Pedro Porro",        club: "Tottenham Hotspur",wiki: "Pedro_Porro" },
         { number: 14, name: "Laporte",   fullName: "Aymeric Laporte",    club: "Al-Nassr",         wiki: "Aymeric_Laporte" },
@@ -347,7 +347,7 @@ const SQUADS = {
         { number: 6,  name: "Merino",    fullName: "Mikel Merino",     club: "Arsenal",           wiki: "Mikel_Merino" },
         { number: 8,  name: "Fabián",    fullName: "Fabián Ruiz",      club: "PSG",               wiki: "Fabián_Ruiz" },
         { number: 9,  name: "Gavi",      fullName: "Gavi",             club: "FC Barcelona",      wiki: "Gavi_(footballer,_born_2004)" },
-        { number: 16, name: "Rodri",     fullName: "Rodri",            club: "Manchester City",   wiki: "Rodri_(footballer)" },
+        { number: 16, name: "Rodri",     fullName: "Rodri",            club: "Manchester City",   wiki: "Rodri_(footballer,_born_1996)" },
         { number: 18, name: "Zubimendi", fullName: "Martín Zubimendi", club: "Arsenal",           wiki: "Martín_Zubimendi" },
         { number: 20, name: "Pedri",     fullName: "Pedri",            club: "FC Barcelona",      wiki: "Pedri" }
       ],
@@ -372,7 +372,7 @@ const SQUADS = {
     groupTeams: "Colombia · DR Congo · Uzbekistan",
     players: {
       "Goalkeepers": [
-        { number: 1,  name: "D. Costa", fullName: "Diogo Costa",  club: "FC Porto",                   wiki: "Diogo_Costa_(footballer)" },
+        { number: 1,  name: "D. Costa", fullName: "Diogo Costa",  club: "FC Porto",                   wiki: "Diogo_Costa" },
         { number: 12, name: "José Sá",  fullName: "José Sá",      club: "Wolverhampton Wanderers",     wiki: "José_Sá" },
         { number: 22, name: "Rui Silva",fullName: "Rui Silva",    club: "Sporting CP",                 wiki: "Rui_Silva_(goalkeeper)" }
       ],
@@ -384,14 +384,14 @@ const SQUADS = {
         { number: 13, name: "R. Veiga",  fullName: "Renato Veiga",     club: "Villarreal",          wiki: "Renato_Veiga" },
         { number: 14, name: "G. Inácio", fullName: "Gonçalo Inácio",   club: "Sporting CP",         wiki: "Gonçalo_Inácio" },
         { number: 20, name: "Cancelo",   fullName: "João Cancelo",     club: "FC Barcelona",        wiki: "João_Cancelo" },
-        { number: 25, name: "N. Mendes", fullName: "Nuno Mendes",      club: "Paris Saint-Germain", wiki: "Nuno_Mendes" }
+        { number: 25, name: "N. Mendes", fullName: "Nuno Mendes",      club: "Paris Saint-Germain", wiki: "Nuno_Mendes_(footballer,_born_2002)" }
       ],
       "Midfielders": [
         { number: 6,  name: "M. Nunes",    fullName: "Matheus Nunes",    club: "Manchester City",    wiki: "Matheus_Nunes" },
-        { number: 8,  name: "B. Fernandes",fullName: "Bruno Fernandes",  club: "Manchester United",  wiki: "Bruno_Fernandes_(footballer,_born_1994)" },
+        { number: 8,  name: "B. Fernandes",fullName: "Bruno Fernandes",  club: "Manchester United",  wiki: "Bruno_Fernandes" },
         { number: 15, name: "J. Neves",    fullName: "João Neves",       club: "Paris Saint-Germain",wiki: "João_Neves_(footballer)" },
         { number: 21, name: "R. Neves",    fullName: "Rúben Neves",      club: "Al Hilal",           wiki: "Rúben_Neves" },
-        { number: 23, name: "Vitinha",     fullName: "Vitinha",          club: "Paris Saint-Germain",wiki: "Vitinha_(footballer)" },
+        { number: 23, name: "Vitinha",     fullName: "Vitinha",          club: "Paris Saint-Germain",wiki: "Vitinha_(footballer,_born_February_2000)" },
         { number: 24, name: "Samú",        fullName: "Samú Costa",       club: "Mallorca",           wiki: "Samú_Costa_(footballer)" }
       ],
       "Forwards": [
