@@ -224,7 +224,7 @@ const SQUADS = {
         { number: 7,  name: "Saka",       fullName: "Bukayo Saka",      club: "Arsenal",           wiki: "Bukayo_Saka" },
         { number: 9,  name: "Kane",       fullName: "Harry Kane",       club: "Bayern Munich",     wiki: "Harry_Kane" },
         { number: 11, name: "Rashford",   fullName: "Marcus Rashford",  club: "Barcelona",         wiki: "Marcus_Rashford" },
-        { number: 18, name: "Gordon",     fullName: "Anthony Gordon",   club: "Newcastle United",  wiki: "Anthony_Gordon" },
+        { number: 18, name: "Gordon",     fullName: "Anthony Gordon",   club: "Newcastle United",  wiki: "Anthony_Gordon_(footballer)" },
         { number: 19, name: "Watkins",    fullName: "Ollie Watkins",    club: "Aston Villa",       wiki: "Ollie_Watkins" },
         { number: 20, name: "Madueke",    fullName: "Noni Madueke",     club: "Chelsea",           wiki: "Noni_Madueke" },
         { number: 22, name: "Toney",      fullName: "Ivan Toney",       club: "Al-Ahli",           wiki: "Ivan_Toney" }
