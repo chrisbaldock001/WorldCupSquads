@@ -52,20 +52,89 @@ const SQUADS = {
 
   "mexico": {
     name: "Mexico",
-    coach: "",
+    coach: "Javier Aguirre",
     flag: "mx",
     group: "A",
     groupTeams: "South Korea · South Africa · Czechia",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "Rangel",    fullName: "Raúl Rangel",        club: "Guadalajara",    wiki: "Raúl_Rangel_(footballer)" },
+        { number: 12, name: "Acevedo",   fullName: "Carlos Acevedo",     club: "Santos Laguna",  wiki: "Carlos_Acevedo" },
+        { number: 13, name: "Ochoa",     fullName: "Guillermo Ochoa",    club: "América",        wiki: "Guillermo_Ochoa" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "J. Sánchez",fullName: "Jorge Sánchez",      club: "PAOK",           wiki: "Jorge_Sánchez_(footballer,_born_1997)" },
+        { number: 3,  name: "Montes",    fullName: "César Montes",       club: "Lokomotiv Moscow",wiki: "César_Montes" },
+        { number: 5,  name: "Vásquez",   fullName: "Johan Vásquez",      club: "Genoa",          wiki: "Johan_Vásquez_(footballer,_born_1998)" },
+        { number: 15, name: "I. Reyes",  fullName: "Israel Reyes",       club: "Club América",   wiki: "Israel_Reyes" },
+        { number: 20, name: "M. Chávez", fullName: "Mateo Chávez",       club: "AZ Alkmaar",     wiki: "Mateo_Chávez" },
+        { number: 23, name: "Gallardo",  fullName: "Jesús Gallardo",     club: "Toluca",         wiki: "Jesús_Gallardo" }
+      ],
+      "Midfielders": [
+        { number: 4,  name: "Álvarez",   fullName: "Edson Álvarez",      club: "West Ham United",wiki: "Edson_Álvarez" },
+        { number: 6,  name: "Lira",      fullName: "Érik Lira",          club: "Cruz Azul",      wiki: "Érik_Lira" },
+        { number: 7,  name: "Romo",      fullName: "Luis Romo",          club: "Guadalajara",    wiki: "Luis_Romo" },
+        { number: 8,  name: "Fidalgo",   fullName: "Álvaro Fidalgo",     club: "Real Betis",     wiki: "Álvaro_Fidalgo" },
+        { number: 17, name: "O. Pineda", fullName: "Orbelín Pineda",     club: "AEK Athens",     wiki: "Orbelín_Pineda" },
+        { number: 18, name: "O. Vargas", fullName: "Obed Vargas",        club: "Atlético Madrid",wiki: "Obed_Vargas" },
+        { number: 24, name: "L. Chávez", fullName: "Luis Chávez",        club: "Dynamo Moscow",  wiki: "Luis_Chávez_(footballer)" },
+        { number: 26, name: "B. Gutiérrez",fullName: "Brian Gutiérrez",  club: "Guadalajara",   wiki: "Brian_Gutiérrez" }
+      ],
+      "Forwards": [
+        { number: 9,  name: "R. Jiménez",  fullName: "Raúl Jiménez",       club: "Fulham",       wiki: "Raúl_Jiménez" },
+        { number: 10, name: "A. Vega",     fullName: "Alexis Vega",        club: "Toluca",       wiki: "Alexis_Vega_(Mexican_footballer)" },
+        { number: 11, name: "S. Giménez",  fullName: "Santiago Giménez",   club: "AC Milan",     wiki: "Santiago_Giménez" },
+        { number: 14, name: "A. González", fullName: "Armando González",   club: "Guadalajara",  wiki: "Armando_González_(footballer,_born_2003)" },
+        { number: 16, name: "Quiñones",    fullName: "Julián Quiñones",    club: "Al-Qadsiah",   wiki: "Julián_Quiñones" },
+        { number: 19, name: "G. Mora",     fullName: "Gilberto Mora",      club: "Club Tijuana",  wiki: "Gilberto_Mora_(footballer,_born_2008)" },
+        { number: 21, name: "C. Huerta",   fullName: "César Huerta",       club: "Anderlecht",   wiki: "César_Huerta" },
+        { number: 22, name: "G. Martínez", fullName: "Guillermo Martínez", club: "Pumas UNAM",   wiki: "Guillermo_Martínez_(footballer)" },
+        { number: 25, name: "R. Alvarado", fullName: "Roberto Alvarado",   club: "Guadalajara",  wiki: "Roberto_Alvarado" }
+      ]
+    }
   },
 
   "canada": {
     name: "Canada",
-    coach: "",
+    coach: "Jesse Marsch",
     flag: "ca",
     group: "B",
     groupTeams: "Switzerland · Bosnia & Herzegovina · Qatar",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "St. Clair", fullName: "Dayne St. Clair",  club: "Inter Miami",    wiki: "Dayne_St._Clair" },
+        { number: 16, name: "Crépeau",   fullName: "Maxime Crépeau",   club: "Orlando City",   wiki: "Maxime_Crépeau" },
+        { number: 18, name: "Goodman",   fullName: "Owen Goodman",     club: "Crystal Palace", wiki: "Owen_Goodman" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "Johnston",       fullName: "Alistair Johnston", club: "Celtic",          wiki: "Alistair_Johnston" },
+        { number: 3,  name: "A. Jones",       fullName: "Alfie Jones",       club: "Middlesbrough",   wiki: "Alfie_Jones" },
+        { number: 4,  name: "De Fougerolles", fullName: "Luc de Fougerolles",club: "Fulham",          wiki: "Luc_de_Fougerolles" },
+        { number: 5,  name: "Waterman",       fullName: "Joel Waterman",     club: "Chicago Fire",    wiki: "Joel_Waterman" },
+        { number: 6,  name: "Sigur",          fullName: "Niko Sigur",        club: "Hajduk Split",    wiki: "Niko_Sigur" },
+        { number: 13, name: "Cornelius",      fullName: "Derek Cornelius",   club: "Marseille",       wiki: "Derek_Cornelius" },
+        { number: 15, name: "Bombito",        fullName: "Moïse Bombito",     club: "OGC Nice",        wiki: "Moïse_Bombito" },
+        { number: 19, name: "Davies",         fullName: "Alphonso Davies",   club: "Bayern Munich",   wiki: "Alphonso_Davies" },
+        { number: 22, name: "Laryea",         fullName: "Richie Laryea",     club: "Toronto FC",      wiki: "Richie_Laryea" }
+      ],
+      "Midfielders": [
+        { number: 7,  name: "Eustáquio",  fullName: "Stephen Eustáquio", club: "Porto",          wiki: "Stephen_Eustáquio" },
+        { number: 8,  name: "Koné",       fullName: "Ismaël Koné",       club: "Sassuolo",       wiki: "Ismaël_Koné" },
+        { number: 11, name: "Buchanan",   fullName: "Tajon Buchanan",    club: "Villarreal",     wiki: "Tajon_Buchanan" },
+        { number: 14, name: "Ahmed",      fullName: "Ali Ahmed",         club: "Norwich City",   wiki: "Ali_Ahmed_(soccer)" },
+        { number: 17, name: "Shaffelburg",fullName: "Jacob Shaffelburg", club: "LAFC",           wiki: "Jacob_Shaffelburg" },
+        { number: 20, name: "Millar",     fullName: "Liam Millar",       club: "Hull City",      wiki: "Liam_Millar" },
+        { number: 21, name: "Osorio",     fullName: "Jonathan Osorio",   club: "Toronto FC",     wiki: "Jonathan_Osorio" },
+        { number: 23, name: "Saliba",     fullName: "Nathan Saliba",     club: "Anderlecht",     wiki: "Nathan_Saliba" },
+        { number: 24, name: "Choinière",  fullName: "Mathieu Choinière", club: "LAFC",           wiki: "Mathieu_Choinière" }
+      ],
+      "Forwards": [
+        { number: 9,  name: "Larin",      fullName: "Cyle Larin",       club: "Mallorca",    wiki: "Cyle_Larin" },
+        { number: 10, name: "J. David",   fullName: "Jonathan David",   club: "Juventus",    wiki: "Jonathan_David" },
+        { number: 12, name: "P. David",   fullName: "Promise David",    club: "Union SG",    wiki: "Promise_David" },
+        { number: 25, name: "Oluwaseyi",  fullName: "Tani Oluwaseyi",   club: "Villarreal",  wiki: "Tani_Oluwaseyi" }
+      ]
+    }
   },
 
   "panama": {
