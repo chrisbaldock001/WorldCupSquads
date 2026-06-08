@@ -103,7 +103,42 @@ const SQUADS = {
     flag: "ar",
     group: "J",
     groupTeams: "Algeria · Austria · Jordan",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "J. Musso",       fullName: "Juan Musso",          club: "Atlético de Madrid",     wiki: "Juan_Musso" },
+        { number: 12, name: "G. Rulli",        fullName: "Gerónimo Rulli",      club: "Olympique de Marseille", wiki: "Gerónimo_Rulli" },
+        { number: 23, name: "E. Martínez",     fullName: "Emiliano Martínez",   club: "Aston Villa",            wiki: "Emiliano_Martínez" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "L. Balerdi",      fullName: "Leonardo Balerdi",    club: "Olympique de Marseille", wiki: "Leonardo_Balerdi" },
+        { number: 3,  name: "N. Tagliafico",   fullName: "Nicolás Tagliafico",  club: "Olympique Lyonnais",     wiki: "Nicolás_Tagliafico" },
+        { number: 4,  name: "G. Montiel",      fullName: "Gonzalo Montiel",     club: "River Plate",            wiki: "Gonzalo_Montiel" },
+        { number: 6,  name: "L. Martínez",     fullName: "Lisandro Martínez",   club: "Manchester United",      wiki: "Lisandro_Martínez" },
+        { number: 13, name: "C. Romero",       fullName: "Cristian Romero",     club: "Tottenham Hotspur",      wiki: "Cristian_Romero" },
+        { number: 19, name: "N. Otamendi",     fullName: "Nicolás Otamendi",    club: "Benfica",                wiki: "Nicolás_Otamendi" },
+        { number: 25, name: "F. Medina",       fullName: "Facundo Medina",      club: "Olympique de Marseille", wiki: "Facundo_Medina_(footballer)" },
+        { number: 26, name: "N. Molina",       fullName: "Nahuel Molina",       club: "Atlético de Madrid",     wiki: "Nahuel_Molina" }
+      ],
+      "Midfielders": [
+        { number: 5,  name: "L. Paredes",      fullName: "Leandro Paredes",     club: "Boca Juniors",           wiki: "Leandro_Paredes" },
+        { number: 7,  name: "R. De Paul",      fullName: "Rodrigo De Paul",     club: "Inter Miami CF",         wiki: "Rodrigo_De_Paul" },
+        { number: 8,  name: "V. Barco",        fullName: "Valentín Barco",      club: "RC Strasbourg",          wiki: "Valentín_Barco" },
+        { number: 11, name: "G. Lo Celso",     fullName: "Giovani Lo Celso",    club: "Real Betis",             wiki: "Giovani_Lo_Celso" },
+        { number: 14, name: "E. Palacios",     fullName: "Exequiel Palacios",   club: "Bayer Leverkusen",       wiki: "Exequiel_Palacios" },
+        { number: 20, name: "Mac Allister",    fullName: "Alexis Mac Allister", club: "Liverpool",              wiki: "Alexis_Mac_Allister" },
+        { number: 24, name: "E. Fernández",    fullName: "Enzo Fernández",      club: "Chelsea",                wiki: "Enzo_Fernández" }
+      ],
+      "Forwards": [
+        { number: 9,  name: "J. Álvarez",      fullName: "Julián Álvarez",      club: "Atlético de Madrid",     wiki: "Julián_Álvarez" },
+        { number: 10, name: "Messi",           fullName: "Lionel Messi",        club: "Inter Miami CF",         wiki: "Lionel_Messi" },
+        { number: 15, name: "N. González",     fullName: "Nicolás González",    club: "Atlético de Madrid",     wiki: "Nicolás_González_(footballer,_born_1998)" },
+        { number: 16, name: "T. Almada",       fullName: "Thiago Almada",       club: "Atlético de Madrid",     wiki: "Thiago_Almada" },
+        { number: 17, name: "G. Simeone",      fullName: "Giuliano Simeone",    club: "Atlético de Madrid",     wiki: "Giuliano_Simeone" },
+        { number: 18, name: "N. Paz",          fullName: "Nicolás Paz",         club: "Como",                   wiki: "Nico_Paz" },
+        { number: 21, name: "J. López",        fullName: "José Manuel López",   club: "Palmeiras",              wiki: "José_Manuel_López_(footballer)" },
+        { number: 22, name: "L. Martínez",     fullName: "Lautaro Martínez",    club: "Internazionale",         wiki: "Lautaro_Martínez" }
+      ]
+    }
   },
 
   "brazil": {
@@ -152,11 +187,46 @@ const SQUADS = {
 
   "colombia": {
     name: "Colombia",
-    coach: "",
+    coach: "Néstor Lorenzo",
     flag: "co",
     group: "K",
     groupTeams: "Portugal · DR Congo · Uzbekistan",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "C. Vargas",      fullName: "Camilo Vargas",          club: "Atlas",               wiki: "Camilo_Vargas" },
+        { number: 12, name: "Á. Montero",     fullName: "Álvaro Montero",         club: "Vélez Sarsfield",     wiki: "Álvaro_Montero_(Colombian_footballer)" },
+        { number: 23, name: "D. Ospina",      fullName: "David Ospina",           club: "Atlético Nacional",   wiki: "David_Ospina" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "D. Muñoz",       fullName: "Daniel Muñoz",           club: "Crystal Palace",      wiki: "Daniel_Muñoz_(footballer)" },
+        { number: 3,  name: "J. Mojica",      fullName: "Johan Mojica",           club: "Mallorca",            wiki: "Johan_Mojica" },
+        { number: 4,  name: "S. Arias",       fullName: "Santiago Arias",         club: "Independiente",       wiki: "Santiago_Arias" },
+        { number: 5,  name: "D. Sánchez",     fullName: "Dávinson Sánchez",       club: "Galatasaray",         wiki: "Davinson_Sánchez" },
+        { number: 6,  name: "J. Lucumí",      fullName: "Jhon Lucumí",            club: "Bologna",             wiki: "Jhon_Lucumí" },
+        { number: 13, name: "Y. Mina",        fullName: "Yerry Mina",             club: "Cagliari",            wiki: "Yerry_Mina" },
+        { number: 15, name: "D. Machado",     fullName: "Déiver Machado",         club: "Nantes",              wiki: "Deiver_Machado" },
+        { number: 16, name: "W. Ditta",       fullName: "Willer Ditta",           club: "Cruz Azul",           wiki: "Willer_Ditta" }
+      ],
+      "Midfielders": [
+        { number: 8,  name: "J. Lerma",       fullName: "Jefferson Lerma",        club: "Crystal Palace",      wiki: "Jefferson_Lerma" },
+        { number: 9,  name: "J. Arias",       fullName: "Jhon Arias",             club: "Palmeiras",           wiki: "Jhon_Arias_(footballer)" },
+        { number: 10, name: "J. Rodríguez",   fullName: "James Rodríguez",        club: "Minnesota United",    wiki: "James_Rodríguez" },
+        { number: 11, name: "J. Carrascal",   fullName: "Jorge Carrascal",        club: "Flamengo",            wiki: "Jorge_Carrascal" },
+        { number: 14, name: "J. Quintero",    fullName: "Juan Fernando Quintero", club: "River Plate",         wiki: "Juan_Fernando_Quintero" },
+        { number: 17, name: "R. Ríos",        fullName: "Richard Ríos",           club: "Benfica",             wiki: "Richard_Ríos" },
+        { number: 18, name: "G. Puerta",      fullName: "Gustavo Puerta",         club: "Racing de Santander", wiki: "Gustavo_Puerta" },
+        { number: 19, name: "K. Castaño",     fullName: "Kevin Castaño",          club: "River Plate",         wiki: "Kevin_Castaño" },
+        { number: 20, name: "J. Campaz",      fullName: "Jaminton Campaz",        club: "Rosario Central",     wiki: "Jaminton_Campaz" },
+        { number: 21, name: "J. Portilla",    fullName: "Juan Camilo Portilla",   club: "Athletico Paranaense",wiki: "Juan_Portilla" }
+      ],
+      "Forwards": [
+        { number: 7,  name: "L. Díaz",        fullName: "Luis Díaz",              club: "Bayern Munich",       wiki: "Luis_Díaz_(footballer,_born_2001)" },
+        { number: 22, name: "J. Córdoba",     fullName: "Jhon Córdoba",           club: "Krasnodar",           wiki: "Jhon_Córdoba" },
+        { number: 24, name: "L. Suárez",      fullName: "Luis Suárez",            club: "Sporting CP",         wiki: "Luis_Suárez_(footballer,_born_1997)" },
+        { number: 25, name: "Cucho Hernández",fullName: "Juan Camilo Hernández",  club: "Real Betis",          wiki: "Cucho_Hernández" },
+        { number: 26, name: "C. Gómez",       fullName: "Carlos Andrés Gómez",    club: "Vasco da Gama",       wiki: "Andrés_Gómez_(footballer)" }
+      ]
+    }
   },
 
   "ecuador": {
