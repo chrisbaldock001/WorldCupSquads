@@ -848,11 +848,46 @@ const SQUADS = {
 
   "scotland": {
     name: "Scotland",
-    coach: "",
+    coach: "Steve Clarke",
     flag: "gb-sct",
     group: "C",
     groupTeams: "Brazil · Morocco · Haiti",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "Gunn",         fullName: "Angus Gunn",            club: "Nottingham Forest",   wiki: "Angus_Gunn" },
+        { number: 12, name: "Kelly",         fullName: "Liam Kelly",            club: "Rangers",             wiki: "Liam_Kelly_(footballer,_born_1990)" },
+        { number: 21, name: "Gordon",        fullName: "Craig Gordon",          club: "Hearts",              wiki: "Craig_Gordon" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "Hickey",        fullName: "Aaron Hickey",          club: "Brentford",           wiki: "Aaron_Hickey" },
+        { number: 3,  name: "Robertson",     fullName: "Andy Robertson",        club: "Liverpool",           wiki: "Andy_Robertson" },
+        { number: 5,  name: "Hanley",        fullName: "Grant Hanley",          club: "Hibernian",           wiki: "Grant_Hanley" },
+        { number: 6,  name: "Tierney",       fullName: "Kieran Tierney",        club: "Celtic",              wiki: "Kieran_Tierney" },
+        { number: 13, name: "Hendry",        fullName: "Jack Hendry",           club: "Al-Ettifaq",          wiki: "Jack_Hendry_(footballer)" },
+        { number: 15, name: "Souttar",       fullName: "John Souttar",          club: "Rangers",             wiki: "John_Souttar" },
+        { number: 16, name: "Hyam",          fullName: "Dominic Hyam",          club: "Wrexham",             wiki: "Dominic_Hyam" },
+        { number: 22, name: "Patterson",     fullName: "Nathan Patterson",      club: "Everton",             wiki: "Nathan_Patterson_(footballer)" },
+        { number: 24, name: "Ralston",       fullName: "Anthony Ralston",       club: "Celtic",              wiki: "Anthony_Ralston" },
+        { number: 26, name: "McKenna",       fullName: "Scott McKenna",         club: "Dinamo Zagreb",       wiki: "Scott_McKenna_(footballer)" }
+      ],
+      "Midfielders": [
+        { number: 4,  name: "McTominay",     fullName: "Scott McTominay",       club: "Napoli",              wiki: "Scott_McTominay" },
+        { number: 7,  name: "McGinn",        fullName: "John McGinn",           club: "Aston Villa",         wiki: "John_McGinn_(footballer)" },
+        { number: 8,  name: "Fletcher",      fullName: "Tyler Fletcher",        club: "Manchester United",   wiki: "Tyler_Fletcher" },
+        { number: 11, name: "Christie",      fullName: "Ryan Christie",         club: "Bournemouth",         wiki: "Ryan_Christie" },
+        { number: 17, name: "Gannon-Doak",   fullName: "Ben Gannon-Doak",       club: "Bournemouth",         wiki: "Ben_Gannon-Doak" },
+        { number: 19, name: "Ferguson",      fullName: "Lewis Ferguson",        club: "Bologna",             wiki: "Lewis_Ferguson_(footballer)" },
+        { number: 23, name: "McLean",        fullName: "Kenny McLean",          club: "Norwich City",        wiki: "Kenny_McLean" },
+        { number: 25, name: "Curtis",        fullName: "Findlay Curtis",        club: "Kilmarnock",          wiki: "Findlay_Curtis" }
+      ],
+      "Forwards": [
+        { number: 9,  name: "Dykes",         fullName: "Lyndon Dykes",          club: "Charlton Athletic",   wiki: "Lyndon_Dykes" },
+        { number: 10, name: "Adams",         fullName: "Ché Adams",             club: "Torino",              wiki: "Ché_Adams" },
+        { number: 14, name: "Stewart",       fullName: "Ross Stewart",          club: "Southampton",         wiki: "Ross_Stewart_(footballer)" },
+        { number: 18, name: "Hirst",         fullName: "George Hirst",          club: "Ipswich Town",        wiki: "George_Hirst_(footballer)" },
+        { number: 20, name: "Shankland",     fullName: "Lawrence Shankland",    club: "Hearts",              wiki: "Lawrence_Shankland" }
+      ]
+    }
   },
 
   "bosnia-herzegovina": {
