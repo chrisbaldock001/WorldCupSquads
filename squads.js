@@ -812,29 +812,131 @@ const SQUADS = {
 
   "japan": {
     name: "Japan",
-    coach: "",
+    coach: "Hajime Moriyasu",
     flag: "jp",
     group: "F",
     groupTeams: "Netherlands · Sweden · Tunisia",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "Z. Suzuki",   fullName: "Zion Suzuki",        club: "Parma",            wiki: "Zion_Suzuki" },
+        { number: 12, name: "K. Osako",    fullName: "Keisuke Osako",      club: "Sanfrecce Hiroshima",wiki: "Keisuke_Osako" },
+        { number: 23, name: "Hayakawa",    fullName: "Tomoki Hayakawa",    club: "Kashima Antlers",  wiki: "Tomoki_Hayakawa" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "Sugawara",    fullName: "Yukinari Sugawara",  club: "Werder Bremen",    wiki: "Yukinari_Sugawara" },
+        { number: 3,  name: "Taniguchi",   fullName: "Shogo Taniguchi",    club: "Sint-Truiden",     wiki: "Shōgo_Taniguchi" },
+        { number: 4,  name: "Itakura",     fullName: "Ko Itakura",         club: "Ajax",             wiki: "Ko_Itakura" },
+        { number: 5,  name: "Nagatomo",    fullName: "Yuto Nagatomo",      club: "FC Tokyo",         wiki: "Yuto_Nagatomo" },
+        { number: 16, name: "Watanabe",    fullName: "Tsuyoshi Watanabe",  club: "Feyenoord",        wiki: "Tsuyoshi_Watanabe_(footballer)" },
+        { number: 20, name: "Seko",        fullName: "Ayumu Seko",         club: "Le Havre",         wiki: "Ayumu_Seko" },
+        { number: 21, name: "H. Ito",      fullName: "Hiroki Ito",         club: "Bayern Munich",    wiki: "Hiroki_Ito_(footballer,_born_2001)" },
+        { number: 22, name: "Tomiyasu",    fullName: "Takehiro Tomiyasu",  club: "Ajax",             wiki: "Takehiro_Tomiyasu" },
+        { number: 25, name: "J. Suzuki",   fullName: "Junnosuke Suzuki",   club: "FC Copenhagen",    wiki: "Junnosuke_Suzuki" }
+      ],
+      "Midfielders": [
+        { number: 6,  name: "Endo",        fullName: "Wataru Endo",        club: "Liverpool",        wiki: "Wataru_Endo" },
+        { number: 7,  name: "Ao Tanaka",   fullName: "Ao Tanaka",          club: "Leeds United",     wiki: "Ao_Tanaka" },
+        { number: 8,  name: "Kubo",        fullName: "Takefusa Kubo",      club: "Real Sociedad",    wiki: "Takefusa_Kubo" },
+        { number: 10, name: "Doan",        fullName: "Ritsu Doan",         club: "Eintracht Frankfurt",wiki: "Ritsu_Dōan" },
+        { number: 15, name: "Kamada",      fullName: "Daichi Kamada",      club: "Crystal Palace",   wiki: "Daichi_Kamada" },
+        { number: 17, name: "I. Suzuki",   fullName: "Iori Suzuki",        club: "Sporting CP",      wiki: "Iori_Suzuki" },
+        { number: 18, name: "Sano",        fullName: "Kaishū Sano",        club: "Mainz",            wiki: "Kaishū_Sano" }
+      ],
+      "Forwards": [
+        { number: 11, name: "D. Maeda",    fullName: "Daizen Maeda",       club: "Celtic",           wiki: "Daizen_Maeda" },
+        { number: 13, name: "Nakamura",    fullName: "Keito Nakamura",     club: "RC Lens",          wiki: "Keito_Nakamura" },
+        { number: 14, name: "J. Ito",      fullName: "Junya Ito",          club: "Genk",             wiki: "Junya_Ito" },
+        { number: 19, name: "Ogawa",       fullName: "Kōki Ogawa",         club: "NEC Nijmegen",     wiki: "Kōki_Ogawa" }
+      ]
+    }
   },
 
   "south-korea": {
     name: "South Korea",
-    coach: "",
+    coach: "Hong Myung-bo",
     flag: "kr",
     group: "A",
     groupTeams: "Mexico · South Africa · Czechia",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 12, name: "Song",        fullName: "Song Bum-keun",      club: "Jeonbuk Hyundai",  wiki: "Song_Bum-keun" },
+        { number: 21, name: "Jo",          fullName: "Jo Hyeon-woo",       club: "Ulsan HD FC",      wiki: "Jo_Hyeon-woo" },
+        { number: 1,  name: "Kim S.",      fullName: "Kim Seung-gyu",      club: "FC Tokyo",         wiki: "Kim_Seung-gyu" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "Lee H.",      fullName: "Lee Han-beom",       club: "FC Midtjylland",   wiki: "Lee_Han-beom" },
+        { number: 4,  name: "Kim M.",      fullName: "Kim Min-jae",        club: "Bayern Munich",    wiki: "Kim_Min-jae" },
+        { number: 5,  name: "Kim T.",      fullName: "Kim Tae-hyeon",      club: "Kashima Antlers",  wiki: "Kim_Tae-hyeon" },
+        { number: 3,  name: "Lee G.",      fullName: "Lee Gi-hyuk",        club: "Gangwon FC",       wiki: "Lee_Gi-hyuk" },
+        { number: 13, name: "Lee T.",      fullName: "Lee Tae-seok",       club: "Austria Wien",     wiki: "Lee_Tae-seok" },
+        { number: 15, name: "Park",        fullName: "Park Jin-seob",      club: "Zhejiang FC",      wiki: "Park_Jin-seob" },
+        { number: 20, name: "Kim M.H.",    fullName: "Kim Moon-hwan",      club: "Daejeon Hana",     wiki: "Kim_Moon-hwan" },
+        { number: 22, name: "Seol",        fullName: "Seol Young-woo",     club: "FK Crvena zvezda", wiki: "Seol_Young-woo" },
+        { number: 23, name: "Castrop",     fullName: "Jens Castrop",       club: "Borussia M'gladbach",wiki: "Jens_Castrop" },
+        { number: 14, name: "Cho W.",      fullName: "Cho Wi-je",          club: "Jeonbuk Hyundai",  wiki: "Cho_Wi-je" }
+      ],
+      "Midfielders": [
+        { number: 6,  name: "Hwang I.",    fullName: "Hwang In-beom",      club: "Feyenoord",        wiki: "Hwang_In-beom" },
+        { number: 8,  name: "Yang",        fullName: "Yang Hyun-jun",      club: "Celtic",           wiki: "Yang_Hyun-jun" },
+        { number: 9,  name: "Paik",        fullName: "Paik Seung-ho",      club: "Birmingham City",  wiki: "Paik_Seung-ho" },
+        { number: 16, name: "Kim J.",      fullName: "Kim Jin-gyu",        club: "Jeonbuk Hyundai",  wiki: "Kim_Jin-gyu" },
+        { number: 17, name: "Bae",         fullName: "Bae Jun-ho",         club: "Stoke City",       wiki: "Bae_Jun-ho" },
+        { number: 24, name: "Eom",         fullName: "Eom Ji-sung",        club: "Swansea City",     wiki: "Eom_Ji-sung" },
+        { number: 26, name: "Lee D.",      fullName: "Lee Dong-gyeong",    club: "Ulsan HD FC",      wiki: "Lee_Dong-gyeong" },
+        { number: 10, name: "Lee J.",      fullName: "Lee Jae-sung",       club: "Mainz",            wiki: "Lee_Jae-sung" },
+        { number: 19, name: "Lee K.",      fullName: "Lee Kang-in",        club: "Paris Saint-Germain",wiki: "Lee_Kang-in" },
+        { number: 11, name: "Hwang H.",    fullName: "Hwang Hee-chan",     club: "Wolverhampton",    wiki: "Hwang_Hee-chan" }
+      ],
+      "Forwards": [
+        { number: 7,  name: "Son",         fullName: "Son Heung-min",      club: "LAFC",             wiki: "Son_Heung-min" },
+        { number: 18, name: "Oh",          fullName: "Oh Hyeon-gyu",       club: "Beşiktaş",         wiki: "Oh_Hyeon-gyu" },
+        { number: 25, name: "Cho G.",      fullName: "Cho Gue-sung",       club: "Freiburg",         wiki: "Cho_Gue-sung" }
+      ]
+    }
   },
 
   "australia": {
     name: "Australia",
-    coach: "",
+    coach: "Tony Popovic",
     flag: "au",
     group: "D",
     groupTeams: "USA · Paraguay · Türkiye",
-    players: {}
+    players: {
+      "Goalkeepers": [
+        { number: 1,  name: "Ryan",        fullName: "Maty Ryan",          club: "Levante UD",       wiki: "Mathew_Ryan" },
+        { number: 12, name: "Izzo",        fullName: "Paul Izzo",          club: "Randers FC",       wiki: "Paul_Izzo" },
+        { number: 18, name: "Beach",       fullName: "Patrick Beach",      club: "Melbourne City",   wiki: "Patrick_Beach_(footballer)" }
+      ],
+      "Defenders": [
+        { number: 2,  name: "Degenek",     fullName: "Milos Degenek",      club: "APOEL FC",         wiki: "Miloš_Degenek" },
+        { number: 3,  name: "Circati",     fullName: "Alessandro Circati", club: "Parma Calcio",     wiki: "Alessandro_Circati" },
+        { number: 4,  name: "Italiano",    fullName: "Jacob Italiano",     club: "Grazer AK",        wiki: "Jacob_Italiano" },
+        { number: 5,  name: "Bos",         fullName: "Jordan Bos",         club: "Feyenoord",        wiki: "Jordan_Bos" },
+        { number: 6,  name: "Geria",       fullName: "Jason Geria",        club: "Albirex Niigata",  wiki: "Jason_Geria" },
+        { number: 15, name: "Trewin",      fullName: "Kai Trewin",         club: "New York City FC", wiki: "Kai_Trewin" },
+        { number: 16, name: "Behich",      fullName: "Aziz Behich",        club: "Melbourne City",   wiki: "Aziz_Behich" },
+        { number: 19, name: "Souttar",     fullName: "Harry Souttar",      club: "Leicester City",   wiki: "Harry_Souttar" },
+        { number: 21, name: "Burgess",     fullName: "Cameron Burgess",    club: "Swansea City",     wiki: "Cameron_Burgess_(footballer)" },
+        { number: 25, name: "Herrington",  fullName: "Lucas Herrington",   club: "Colorado Rapids",  wiki: "Lucas_Herrington" }
+      ],
+      "Midfielders": [
+        { number: 8,  name: "Metcalfe",    fullName: "Connor Metcalfe",    club: "St. Pauli",        wiki: "Connor_Metcalfe" },
+        { number: 10, name: "Hrustic",     fullName: "Ajdin Hrustic",      club: "Heracles Almelo",  wiki: "Ajdin_Hrustić" },
+        { number: 13, name: "O'Neill",     fullName: "Aiden O'Neill",      club: "New York City FC", wiki: "Aiden_O'Neill_(footballer)" },
+        { number: 14, name: "Devlin",      fullName: "Cameron Devlin",     club: "Hearts",           wiki: "Cameron_Devlin" },
+        { number: 22, name: "Irvine",      fullName: "Jackson Irvine",     club: "St. Pauli",        wiki: "Jackson_Irvine" },
+        { number: 24, name: "Okon-Engstler",fullName: "Paul Okon-Engstler",club: "Sydney FC",        wiki: "Paul_Okon-Engstler" }
+      ],
+      "Forwards": [
+        { number: 7,  name: "Leckie",      fullName: "Mathew Leckie",      club: "Melbourne City",   wiki: "Mathew_Leckie" },
+        { number: 9,  name: "Toure",       fullName: "Mohamed Toure",      club: "Norwich City",     wiki: "Mohamed_Toure_(footballer)" },
+        { number: 11, name: "Mabil",       fullName: "Awer Mabil",         club: "CD Castellón",     wiki: "Awer_Mabil" },
+        { number: 17, name: "Irankunda",   fullName: "Nestory Irankunda",  club: "Watford",          wiki: "Nestory_Irankunda" },
+        { number: 20, name: "Volpato",     fullName: "Cristian Volpato",   club: "Sassuolo",         wiki: "Cristian_Volpato" },
+        { number: 23, name: "Velupillay",  fullName: "Nishan Velupillay",  club: "Melbourne Victory",wiki: "Nishan_Velupillay" },
+        { number: 26, name: "Yengi",       fullName: "Tete Yengi",         club: "Machida Zelvia",   wiki: "Tete_Yengi" }
+      ]
+    }
   },
 
   "iran": {
