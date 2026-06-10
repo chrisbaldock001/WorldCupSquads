@@ -1,15 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&display=swap');
+
 :root {
-  --bg: #0d1b2a;
-  --bg-secondary: #0a1525;
+  --bg: #111111;
+  --bg-secondary: #090909;
   --card-bg: #ffffff;
   --card-disabled-bg: rgba(255, 255, 255, 0.07);
   --card-disabled-border: rgba(255, 255, 255, 0.1);
   --card-disabled-text: rgba(255, 255, 255, 0.3);
   --card-disabled-flag: 0.25;
-  --accent: #c8a84b;
+  --accent: #FF5F4E;
   --text: #f0f0f0;
   --text-muted: rgba(255, 255, 255, 0.55);
-  --card-text: #1a1a2e;
+  --card-text: #111111;
   --card-subtext: #4a5568;
 }
 
@@ -25,7 +27,7 @@ html {
 
 body {
   background-color: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Barlow', system-ui, sans-serif;
   color: var(--text);
   min-height: 100vh;
   line-height: 1.5;
@@ -35,7 +37,7 @@ body {
 
 .site-header {
   background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 100%);
-  border-bottom: 1px solid rgba(200, 168, 75, 0.25);
+  border-bottom: 1px solid rgba(255, 95, 78, 0.25);
   padding: 2.5rem 1rem 2rem;
   text-align: center;
 }
@@ -103,7 +105,7 @@ main {
   color: var(--accent);
   margin-bottom: 0.9rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(200, 168, 75, 0.18);
+  border-bottom: 1px solid rgba(255, 95, 78, 0.18);
 }
 
 /* ─── Countries grid ──────────────────────────────────────────── */
@@ -203,7 +205,7 @@ div.country-card .country-card__name {
   gap: 1.25rem;
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(200, 168, 75, 0.2);
+  border-bottom: 1px solid rgba(255, 95, 78, 0.2);
   flex-wrap: wrap;
 }
 
@@ -249,7 +251,7 @@ div.country-card .country-card__name {
   color: var(--accent);
   margin-bottom: 1.1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(200, 168, 75, 0.18);
+  border-bottom: 1px solid rgba(255, 95, 78, 0.18);
 }
 
 /* ─── Players grid ────────────────────────────────────────────── */
@@ -302,7 +304,7 @@ div.country-card .country-card__name {
   object-fit: cover;
   object-position: center top;
   border: 3px solid var(--accent);
-  background-color: #1e2d3d;
+  background-color: #1e1e1e;
   display: block;
 }
 
@@ -311,7 +313,7 @@ div.country-card .country-card__name {
   bottom: 0;
   right: 0;
   background: var(--accent);
-  color: #1a1a2e;
+  color: #0a0a0a;
   font-size: 0.7rem;
   font-weight: 800;
   width: 24px;
@@ -345,7 +347,7 @@ div.country-card .country-card__name {
   inset: 0;
   border-radius: 50%;
   border: 3px solid var(--accent);
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 100%);
+  background: linear-gradient(135deg, #2a2a2a 0%, #3d3d3d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -396,7 +398,7 @@ div.country-card .country-card__name {
 .player-overlay__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.72);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -410,9 +412,9 @@ div.country-card .country-card__name {
   z-index: 1;
   width: 100%;
   max-width: 600px;
-  background: linear-gradient(170deg, #1a2d42 0%, #0f1e2f 100%);
+  background: linear-gradient(170deg, #252525 0%, #191919 100%);
   border-radius: 20px 20px 0 0;
-  border-top: 1px solid rgba(200, 168, 75, 0.25);
+  border-top: 1px solid rgba(255, 95, 78, 0.25);
   padding: 0.75rem 1.25rem max(1.75rem, env(safe-area-inset-bottom));
   max-height: 88svh;
   overflow-y: auto;
@@ -495,11 +497,11 @@ div.country-card .country-card__name {
 .player-overlay__photo {
   object-fit: cover;
   object-position: center top;
-  background: #1e2d3d;
+  background: #1e1e1e;
 }
 
 .player-overlay__photo-placeholder {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 100%);
+  background: linear-gradient(135deg, #2a2a2a 0%, #3d3d3d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -514,7 +516,7 @@ div.country-card .country-card__name {
   bottom: 6px;
   right: 6px;
   background: var(--accent);
-  color: #1a1a2e;
+  color: #0a0a0a;
   font-size: 0.95rem;
   font-weight: 800;
   min-width: 36px;
@@ -524,7 +526,7 @@ div.country-card .country-card__name {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid #0f1e2f;
+  border: 3px solid #0a0a0a;
   line-height: 1;
 }
 
@@ -556,7 +558,7 @@ div.country-card .country-card__name {
   border-radius: 5px;
 }
 
-.player-overlay__pos-badge--GK  { background: rgba(200,168,75,0.15); color: var(--accent); }
+.player-overlay__pos-badge--GK  { background: rgba(255, 95, 78, 0.15); color: var(--accent); }
 .player-overlay__pos-badge--DEF { background: rgba(59,130,246,0.15); color: #60a5fa; }
 .player-overlay__pos-badge--MID { background: rgba(34,197,94,0.15);  color: #4ade80; }
 .player-overlay__pos-badge--FWD { background: rgba(239,68,68,0.15);  color: #f87171; }
@@ -567,8 +569,8 @@ div.country-card .country-card__name {
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(200, 168, 75, 0.1);
-  border: 1px solid rgba(200, 168, 75, 0.3);
+  background: rgba(255, 95, 78, 0.1);
+  border: 1px solid rgba(255, 95, 78, 0.3);
   padding: 0.2em 0.55em;
   border-radius: 5px;
 }
@@ -654,7 +656,7 @@ div.country-card .country-card__name {
 }
 
 .player-overlay__nav-btn:hover {
-  background: rgba(200, 168, 75, 0.15);
+  background: rgba(255, 95, 78, 0.15);
   color: var(--accent);
 }
 
@@ -678,5 +680,5 @@ div.country-card .country-card__name {
   padding: 1.5rem 1rem;
   text-align: center;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.62);
 }
