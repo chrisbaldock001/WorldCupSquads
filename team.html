@@ -76,10 +76,6 @@
               <span class="player-overlay__stat-val" id="ov-pos-val"></span>
               <span class="player-overlay__stat-lbl">Position</span>
             </div>
-            <div class="player-overlay__stat">
-              <span class="player-overlay__stat-val" id="ov-num-val"></span>
-              <span class="player-overlay__stat-lbl">Number</span>
-            </div>
           </div>
         </div>
       </div>
@@ -198,7 +194,6 @@
     const ovAge        = document.getElementById("ov-age");
     const ovCaps       = document.getElementById("ov-caps");
     const ovPosVal     = document.getElementById("ov-pos-val");
-    const ovNumVal     = document.getElementById("ov-num-val");
     const ovCounter    = document.getElementById("ov-counter");
 
     function calcAge(born) {
@@ -243,7 +238,6 @@
 
       // Number
       ovNumBadge.textContent = player.number;
-      ovNumVal.textContent   = player.number;
 
       // Position badge
       const pos = player.position || "";
