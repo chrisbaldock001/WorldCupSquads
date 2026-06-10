@@ -120,29 +120,33 @@
       }
       const result = { image: null, born: null, caps: null };
       try {
+        // Fetch image + lead section wikitext (contains the infobox) in one request
         const url = "https://en.wikipedia.org/w/api.php?action=query"
           + "&titles=" + encodeURIComponent(title)
-          + "&prop=pageimages|extracts&exintro=1&explaintext=1"
-          + "&format=json&pithumbsize=500&origin=*";
+          + "&prop=pageimages|revisions"
+          + "&pithumbsize=500"
+          + "&rvprop=content&rvslots=main&rvsection=0"
+          + "&format=json&origin=*";
         const data = await (await fetch(url)).json();
         const page = Object.values(data.query.pages)[0];
         if (!page || page.missing) { sessionStorage.setItem(key, JSON.stringify(result)); return result; }
         if (page.thumbnail?.source) result.image = page.thumbnail.source;
-        const text = page.extract || "";
-        const MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December";
-        const bdm = text.match(new RegExp(`\\bborn\\s+(\\d{1,2}\\s+(?:${MONTHS})\\s+\\d{4}|(?:${MONTHS})\\s+\\d{1,2},?\\s+\\d{4})`, "i"));
-        if (bdm) { const d = new Date(bdm[1]); if (!isNaN(d)) result.born = d.toISOString().slice(0, 10); }
-        const capsPatterns = [
-          /\b(\d{1,4})\s+international\s+(?:caps?|appearances?|games?|matches?)\b/i,
-          /\b(\d{1,4})\s+caps?\s+for\b/i,
-          /(?:earned?|won|made)\s+(\d{1,4})\s+(?:international\s+)?caps?\b/i,
-          /scored\s+\d+\s+goals?\s+in\s+(\d{1,4})\s+(?:caps?|appearances?)\b/i,
-          /in\s+(\d{1,4})\s+appearances?\s+for\s+(?:the\s+)?(?:\w+\s+){0,3}national/i,
-        ];
-        for (const pat of capsPatterns) {
-          const m = text.match(pat);
-          if (m) { result.caps = parseInt(m[1], 10); break; }
+
+        // Wikitext is in slots.main["*"] (modern API) or directly in ["*"] (legacy)
+        const wikitext = page.revisions?.[0]?.slots?.main?.["*"]
+                      || page.revisions?.[0]?.["*"]
+                      || "";
+
+        if (wikitext) {
+          // Birth date from {{Birth date|YYYY|MM|DD}} — structured, no JS Date parsing needed
+          const bdm = wikitext.match(/\{\{[Bb]irth[^}|]*\|(\d{4})\|(\d{1,2})\|(\d{1,2})/);
+          if (bdm) result.born = bdm[1] + "-" + bdm[2].padStart(2,"0") + "-" + bdm[3].padStart(2,"0");
+
+          // International caps from infobox: | nationalcaps = 87 (or nationalcaps1, national_caps)
+          const capsM = wikitext.match(/\|\s*national_?caps\d*\s*=\s*(\d+)/);
+          if (capsM) result.caps = parseInt(capsM[1], 10);
         }
+
         sessionStorage.setItem(key, JSON.stringify(result));
       } catch {}
       return result;
