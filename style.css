@@ -143,7 +143,8 @@ main {
 /* ─── Enabled card ────────────────────────────────────────────── */
 
 a.country-card {
-  background: var(--card-bg);
+  background: #222222;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   cursor: pointer;
   text-decoration: none;
@@ -152,6 +153,7 @@ a.country-card {
 a.country-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 a.country-card:active {
@@ -159,7 +161,7 @@ a.country-card:active {
 }
 
 a.country-card .country-card__name {
-  color: var(--card-text);
+  color: #ffffff;
   font-weight: 700;
 }
 
