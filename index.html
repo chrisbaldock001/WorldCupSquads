@@ -330,8 +330,14 @@
       }
 
       document.querySelectorAll(".sort-control__btn").forEach(btn =>
-        btn.addEventListener("click", () => setView(btn.dataset.sort))
+        btn.addEventListener("click", () => {
+          sessionStorage.setItem("wc26_sort", btn.dataset.sort);
+          setView(btn.dataset.sort);
+        })
       );
+
+      const saved = sessionStorage.getItem("wc26_sort");
+      if (saved && saved !== "confederation") setView(saved);
     })();
   </script>
 </body>
