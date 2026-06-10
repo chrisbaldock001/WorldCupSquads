@@ -17,6 +17,14 @@
 
   <main>
 
+    <div class="sort-control" role="group" aria-label="Sort teams by">
+      <button class="sort-control__btn is-active" data-sort="confederation">Confederation</button>
+      <button class="sort-control__btn" data-sort="ranking">FIFA Ranking</button>
+      <button class="sort-control__btn" data-sort="az">A–Z</button>
+    </div>
+
+    <div id="conf-view">
+
     <!-- CONCACAF -->
     <section class="confederation">
       <h2 class="confederation__title">CONCACAF</h2>
@@ -251,11 +259,80 @@
       </div>
     </section>
 
+    </div><!-- /conf-view -->
+
+    <div id="flat-view" style="display:none">
+      <div class="countries-grid" id="flat-grid"></div>
+    </div>
+
   </main>
 
   <footer class="site-footer">
     <p>FIFA World Cup 2026 · USA, Canada &amp; Mexico · 48 Teams</p>
   </footer>
 
+  <script>
+    (function () {
+      const FIFA_RANK = {
+        argentina:1,  france:2,    spain:3,      england:4,   brazil:5,
+        portugal:6,   belgium:7,   netherlands:8, colombia:9,  croatia:10,
+        mexico:11,    germany:12,  morocco:13,   japan:15,    usa:16,
+        uruguay:17,   switzerland:18, senegal:20, iran:21,    "south-korea":23,
+        austria:24,   australia:25, canada:26,   ecuador:27,  norway:29,
+        sweden:31,    turkiye:33,  czechia:35,   egypt:36,    scotland:37,
+        tunisia:39,   algeria:42,  paraguay:47,  "cote-divoire":51,
+        "bosnia-herzegovina":54, ghana:56, "saudi-arabia":58, "south-africa":59,
+        qatar:60,     iraq:64,     panama:66,    "cape-verde":68, "dr-congo":74,
+        jordan:83,    uzbekistan:85, curacao:91,  haiti:97,   "new-zealand":102
+      };
+
+      const confView = document.getElementById("conf-view");
+      const flatView = document.getElementById("flat-view");
+      const flatGrid = document.getElementById("flat-grid");
+
+      // Stamp data attributes onto every card once
+      document.querySelectorAll("#conf-view .country-card").forEach(card => {
+        const key = (card.getAttribute("href") || "").split("team=")[1] || "";
+        if (FIFA_RANK[key]) card.dataset.rank = FIFA_RANK[key];
+        card.dataset.name = card.querySelector(".country-card__name").textContent;
+      });
+
+      function setView(sort) {
+        document.querySelectorAll(".sort-control__btn").forEach(b =>
+          b.classList.toggle("is-active", b.dataset.sort === sort)
+        );
+        if (sort === "confederation") {
+          confView.style.display = "";
+          flatView.style.display = "none";
+          return;
+        }
+        confView.style.display = "none";
+        flatView.style.display = "";
+
+        const cards = [...document.querySelectorAll("#conf-view .country-card")];
+        cards.sort((a, b) =>
+          sort === "ranking"
+            ? (parseInt(a.dataset.rank) || 999) - (parseInt(b.dataset.rank) || 999)
+            : a.dataset.name.localeCompare(b.dataset.name)
+        );
+
+        flatGrid.innerHTML = "";
+        cards.forEach(card => {
+          const clone = card.cloneNode(true);
+          if (sort === "ranking" && clone.dataset.rank) {
+            const badge = document.createElement("span");
+            badge.className = "country-card__rank";
+            badge.textContent = "#" + clone.dataset.rank;
+            clone.appendChild(badge);
+          }
+          flatGrid.appendChild(clone);
+        });
+      }
+
+      document.querySelectorAll(".sort-control__btn").forEach(btn =>
+        btn.addEventListener("click", () => setView(btn.dataset.sort))
+      );
+    })();
+  </script>
 </body>
 </html>

@@ -675,6 +675,52 @@ div.country-card .country-card__name {
   user-select: none;
 }
 
+/* ─── Sort / segment control ─────────────────────────────────── */
+
+.sort-control {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 2rem;
+}
+
+.sort-control__btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+}
+
+.sort-control__btn.is-active {
+  background: var(--accent);
+  color: #0a0a0a;
+}
+
+.sort-control__btn:hover:not(.is-active) {
+  color: var(--text);
+}
+
+/* rank badge appended to country cards in FIFA Ranking view */
+.country-card__rank {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
 /* ─── Footer ──────────────────────────────────────────────────── */
 
 .site-footer {
