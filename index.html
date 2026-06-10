@@ -10,6 +10,11 @@
 <body>
 
   <header class="site-header">
+    <button class="clear-cache-btn" id="clear-cache-btn" title="Clear player data cache" aria-label="Clear player data cache">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <path d="M6.5 1.5A5 5 0 1 0 11 6.5M11 1.5v3.5H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
     <div class="site-header__eyebrow">USA · Canada · Mexico</div>
     <h1 class="site-header__title">FIFA World Cup 2026</h1>
     <p class="site-header__subtitle">Squad Guide — Select a team to view their players</p>
@@ -338,6 +343,15 @@
 
       const saved = sessionStorage.getItem("wc26_sort");
       if (saved && saved !== "confederation") setView(saved);
+
+      document.getElementById("clear-cache-btn").addEventListener("click", () => {
+        Object.keys(sessionStorage)
+          .filter(k => k.startsWith("wc26_"))
+          .forEach(k => sessionStorage.removeItem(k));
+        const btn = document.getElementById("clear-cache-btn");
+        btn.classList.add("did-clear");
+        setTimeout(() => btn.classList.remove("did-clear"), 900);
+      });
     })();
   </script>
 </body>
