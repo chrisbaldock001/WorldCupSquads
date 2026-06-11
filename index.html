@@ -284,6 +284,63 @@
 
   </main>
 
+  <!-- ── Player detail overlay ────────────────────────────────── -->
+  <div id="player-overlay" class="player-overlay" aria-hidden="true">
+    <div class="player-overlay__backdrop" id="ov-backdrop"></div>
+    <div class="player-overlay__sheet" role="dialog" aria-modal="true" aria-labelledby="ov-name">
+      <div class="player-overlay__handle"></div>
+      <button class="player-overlay__close" id="ov-close" aria-label="Close player details">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="player-overlay__body">
+        <div class="player-overlay__photo-wrap">
+          <div class="player-overlay__photo-placeholder" id="ov-placeholder"></div>
+          <img class="player-overlay__photo" id="ov-photo" alt="" style="display:none">
+          <div class="player-overlay__num-badge" id="ov-num-badge"></div>
+        </div>
+        <div class="player-overlay__info">
+          <div class="player-overlay__meta">
+            <span class="player-overlay__pos-badge" id="ov-pos-badge"></span>
+            <span class="player-overlay__captain-badge" id="ov-captain-badge" style="display:none">Captain</span>
+          </div>
+          <h2 class="player-overlay__name" id="ov-name"></h2>
+          <p class="player-overlay__club" id="ov-club"></p>
+          <div class="player-overlay__stats">
+            <div class="player-overlay__stat">
+              <span class="player-overlay__stat-val" id="ov-age">—</span>
+              <span class="player-overlay__stat-lbl">Age</span>
+            </div>
+            <div class="player-overlay__stat">
+              <span class="player-overlay__stat-val" id="ov-caps">—</span>
+              <span class="player-overlay__stat-lbl">Caps</span>
+            </div>
+            <div class="player-overlay__stat">
+              <span class="player-overlay__stat-val" id="ov-pos-val"></span>
+              <span class="player-overlay__stat-lbl">Position</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="player-overlay__nav-row">
+        <button class="player-overlay__nav-btn" id="ov-prev" aria-label="Previous player">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M13 4l-7 7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="player-overlay__counter" id="ov-counter">1 / 26</span>
+        <button class="player-overlay__nav-btn" id="ov-next" aria-label="Next player">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M7 4l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <p>FIFA World Cup 2026 · USA, Canada &amp; Mexico · 48 Teams</p>
   </footer>
@@ -291,6 +348,61 @@
   <script src="squads.js"></script>
   <script>
     (function () {
+
+      // ── Helpers ───────────────────────────────────────────────
+      function initials(name) {
+        return name.split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+      }
+
+      async function fetchPlayerData(title) {
+        const key = "wc26_" + title;
+        const hit = sessionStorage.getItem(key);
+        if (hit !== null) {
+          try {
+            const parsed = JSON.parse(hit);
+            if (parsed && typeof parsed === "object" && "image" in parsed) return parsed;
+          } catch {}
+          return { image: hit || null, born: null, caps: null };
+        }
+        const result = { image: null, born: null, caps: null };
+        try {
+          const url = "https://en.wikipedia.org/w/api.php?action=query"
+            + "&titles=" + encodeURIComponent(title)
+            + "&prop=pageimages|revisions"
+            + "&pithumbsize=500"
+            + "&rvprop=content&rvslots=main&rvsection=0"
+            + "&format=json&origin=*";
+          const data = await (await fetch(url)).json();
+          const page = Object.values(data.query.pages)[0];
+          if (!page || page.missing) { sessionStorage.setItem(key, JSON.stringify(result)); return result; }
+          if (page.thumbnail?.source) result.image = page.thumbnail.source;
+          const wikitext = page.revisions?.[0]?.slots?.main?.["*"]
+                        || page.revisions?.[0]?.["*"]
+                        || "";
+          if (wikitext) {
+            const bdm = wikitext.match(/\{\{[Bb]irth[^}|]*\|(\d{4})\|(\d{1,2})\|(\d{1,2})/);
+            if (bdm) result.born = bdm[1] + "-" + bdm[2].padStart(2,"0") + "-" + bdm[3].padStart(2,"0");
+            const capsM = wikitext.match(/\|\s*national_?caps\d*\s*=\s*(\d+)/);
+            if (capsM) result.caps = parseInt(capsM[1], 10);
+          }
+          sessionStorage.setItem(key, JSON.stringify(result));
+        } catch {}
+        return result;
+      }
+
+      function calcAge(born) {
+        const b = new Date(born);
+        if (isNaN(b)) return "—";
+        const today = new Date();
+        let age = today.getFullYear() - b.getFullYear();
+        const m = today.getMonth() - b.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+        return age;
+      }
+
+      const POS_FULL = { GK: "GK", DEF: "DEF", MID: "MID", FWD: "FWD" };
+
+      // ── Teams sort ────────────────────────────────────────────
       const FIFA_RANK = {
         argentina:1,  france:2,    spain:3,      england:4,   brazil:5,
         portugal:6,   belgium:7,   netherlands:8, colombia:9,  croatia:10,
@@ -350,6 +462,104 @@
         });
       }
 
+      // ── Overlay ───────────────────────────────────────────────
+      let allPlayers = [];
+      let currentIdx = 0;
+
+      const overlay       = document.getElementById("player-overlay");
+      const ovPhoto       = document.getElementById("ov-photo");
+      const ovPlaceholder = document.getElementById("ov-placeholder");
+      const ovNumBadge    = document.getElementById("ov-num-badge");
+      const ovPosBadge    = document.getElementById("ov-pos-badge");
+      const ovCaptain     = document.getElementById("ov-captain-badge");
+      const ovName        = document.getElementById("ov-name");
+      const ovClub        = document.getElementById("ov-club");
+      const ovAge         = document.getElementById("ov-age");
+      const ovCaps        = document.getElementById("ov-caps");
+      const ovPosVal      = document.getElementById("ov-pos-val");
+      const ovCounter     = document.getElementById("ov-counter");
+
+      function renderOverlay(player) {
+        ovPlaceholder.textContent = initials(player.name);
+        ovPlaceholder.style.display = "flex";
+        ovPhoto.style.display = "none";
+        ovPhoto.src = "";
+
+        function showOvImg(src) {
+          ovPhoto.src = src;
+          ovPhoto.style.display = "block";
+          ovPlaceholder.style.display = "none";
+          ovPhoto.onerror = () => { ovPhoto.style.display = "none"; ovPlaceholder.style.display = "flex"; };
+        }
+        if (player.image) {
+          showOvImg(player.image);
+        } else if (player.wiki) {
+          fetchPlayerData(player.wiki).then(data => {
+            if (data.image) showOvImg(data.image);
+            if (!player._fetched) {
+              player._fetched = true;
+              if (data.born)       player.born = data.born;
+              if (data.caps != null) player.caps = data.caps;
+            }
+            if (allPlayers[currentIdx] === player) {
+              ovAge.textContent  = player.born ? calcAge(player.born) : "—";
+              ovCaps.textContent = (player.caps != null) ? player.caps : "—";
+            }
+          });
+        }
+
+        ovNumBadge.textContent = player.number || "";
+        const pos = player.position || "";
+        ovPosBadge.className    = "player-overlay__pos-badge player-overlay__pos-badge--" + pos;
+        ovPosBadge.textContent  = POS_FULL[pos] || pos || "—";
+        ovCaptain.style.display = player.captain ? "inline-flex" : "none";
+        ovName.textContent      = player.fullName || player.name;
+        ovClub.textContent      = player.club || "";
+        ovAge.textContent       = player.born ? calcAge(player.born) : "—";
+        ovCaps.textContent      = (player.caps != null) ? player.caps : "—";
+        ovPosVal.textContent    = POS_FULL[pos] || pos || "—";
+        ovCounter.textContent   = `${currentIdx + 1} / ${allPlayers.length}`;
+      }
+
+      function openOverlay(idx) {
+        currentIdx = idx;
+        renderOverlay(allPlayers[currentIdx]);
+        overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeOverlay() {
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function navigate(dir) {
+        currentIdx = (currentIdx + dir + allPlayers.length) % allPlayers.length;
+        renderOverlay(allPlayers[currentIdx]);
+      }
+
+      document.getElementById("ov-close").addEventListener("click", closeOverlay);
+      document.getElementById("ov-backdrop").addEventListener("click", closeOverlay);
+      document.getElementById("ov-prev").addEventListener("click", () => navigate(-1));
+      document.getElementById("ov-next").addEventListener("click", () => navigate(1));
+
+      document.addEventListener("keydown", e => {
+        if (!overlay.classList.contains("is-open")) return;
+        if (e.key === "Escape")     closeOverlay();
+        if (e.key === "ArrowLeft")  navigate(-1);
+        if (e.key === "ArrowRight") navigate(1);
+      });
+
+      let touchX = 0;
+      overlay.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
+      overlay.addEventListener("touchend",   e => {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 48) navigate(dx < 0 ? 1 : -1);
+      }, { passive: true });
+
+      // ── Players A–Z list ──────────────────────────────────────
       let playerListBuilt = false;
       function buildPlayerList() {
         if (playerListBuilt) return;
@@ -363,22 +573,25 @@
           if (Array.isArray(first)) {
             Object.values(raw).forEach(arr => arr.forEach(p => {
               const n = (p.fullName || p.name || "").trim();
-              if (n && !seen.has(n)) { seen.add(n); players.push(n); }
+              if (n && !seen.has(n)) { seen.add(n); players.push(p); }
             }));
           } else {
             Object.values(raw).forEach(p => {
               const n = (p.fullName || p.name || "").trim();
-              if (n && !seen.has(n)) { seen.add(n); players.push(n); }
+              if (n && !seen.has(n)) { seen.add(n); players.push(p); }
             });
           }
         });
-        players.sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
+        players.sort((a, b) =>
+          (a.fullName || a.name).localeCompare(b.fullName || b.name, "en", { sensitivity: "base" })
+        );
+        allPlayers = players;
 
         const groups = {};
-        players.forEach(name => {
-          const letter = name[0].toUpperCase();
+        players.forEach((player, idx) => {
+          const letter = (player.fullName || player.name)[0].toUpperCase();
           if (!groups[letter]) groups[letter] = [];
-          groups[letter].push(name);
+          groups[letter].push({ player, idx });
         });
 
         playersList.innerHTML = "";
@@ -390,10 +603,17 @@
           heading.className = "players-az__letter";
           heading.textContent = letter;
           section.appendChild(heading);
-          groups[letter].forEach(name => {
+          groups[letter].forEach(({ player, idx }) => {
             const item = document.createElement("div");
             item.className = "players-az__item";
-            item.textContent = name;
+            item.textContent = player.fullName || player.name;
+            item.setAttribute("role", "button");
+            item.setAttribute("tabindex", "0");
+            item.setAttribute("aria-label", `View ${player.fullName || player.name} details`);
+            item.addEventListener("click", () => openOverlay(idx));
+            item.addEventListener("keydown", e => {
+              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openOverlay(idx); }
+            });
             section.appendChild(item);
           });
           playersList.appendChild(section);
@@ -424,6 +644,7 @@
         }, { passive: false });
       }
 
+      // ── Top-level view switching ──────────────────────────────
       function setTopView(view) {
         document.querySelectorAll(".sort-control__btn").forEach(b =>
           b.classList.toggle("is-active", b.dataset.view === view)
