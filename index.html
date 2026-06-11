@@ -307,6 +307,7 @@
             <span class="player-overlay__captain-badge" id="ov-captain-badge" style="display:none">Captain</span>
           </div>
           <h2 class="player-overlay__name" id="ov-name"></h2>
+          <p class="player-overlay__country" id="ov-country"></p>
           <p class="player-overlay__club" id="ov-club"></p>
           <div class="player-overlay__stats">
             <div class="player-overlay__stat">
@@ -473,6 +474,7 @@
       const ovPosBadge    = document.getElementById("ov-pos-badge");
       const ovCaptain     = document.getElementById("ov-captain-badge");
       const ovName        = document.getElementById("ov-name");
+      const ovCountry     = document.getElementById("ov-country");
       const ovClub        = document.getElementById("ov-club");
       const ovAge         = document.getElementById("ov-age");
       const ovCaps        = document.getElementById("ov-caps");
@@ -514,6 +516,11 @@
         ovPosBadge.textContent  = POS_FULL[pos] || pos || "—";
         ovCaptain.style.display = player.captain ? "inline-flex" : "none";
         ovName.textContent      = player.fullName || player.name;
+        if (player._teamFlag) {
+          ovCountry.innerHTML = `<img src="https://flagcdn.com/w20/${player._teamFlag}.png" alt="${player._teamName || ''}"> ${player._teamName || ''}`;
+        } else {
+          ovCountry.textContent = player._teamName || "";
+        }
         ovClub.textContent      = player.club || "";
         ovAge.textContent       = player.born ? calcAge(player.born) : "—";
         ovCaps.textContent      = (player.caps != null) ? player.caps : "—";
@@ -573,12 +580,12 @@
           if (Array.isArray(first)) {
             Object.values(raw).forEach(arr => arr.forEach(p => {
               const n = (p.fullName || p.name || "").trim();
-              if (n && !seen.has(n)) { seen.add(n); players.push(p); }
+              if (n && !seen.has(n)) { seen.add(n); players.push({ ...p, _teamName: team.name, _teamFlag: team.flag }); }
             }));
           } else {
             Object.values(raw).forEach(p => {
               const n = (p.fullName || p.name || "").trim();
-              if (n && !seen.has(n)) { seen.add(n); players.push(p); }
+              if (n && !seen.has(n)) { seen.add(n); players.push({ ...p, _teamName: team.name, _teamFlag: team.flag }); }
             });
           }
         });

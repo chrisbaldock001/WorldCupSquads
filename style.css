@@ -587,6 +587,23 @@ div.country-card .country-card__name {
   word-break: break-word;
 }
 
+.player-overlay__country {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.1rem;
+}
+
+.player-overlay__country img {
+  width: 16px;
+  height: auto;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .player-overlay__club {
   font-size: 0.88rem;
   color: var(--text-muted);

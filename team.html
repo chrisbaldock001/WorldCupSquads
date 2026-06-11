@@ -62,6 +62,7 @@
             <span class="player-overlay__captain-badge" id="ov-captain-badge" style="display:none">Captain</span>
           </div>
           <h2 class="player-overlay__name" id="ov-name"></h2>
+          <p class="player-overlay__country" id="ov-country"></p>
           <p class="player-overlay__club" id="ov-club"></p>
           <div class="player-overlay__stats">
             <div class="player-overlay__stat">
@@ -190,6 +191,7 @@
     const ovPosBadge   = document.getElementById("ov-pos-badge");
     const ovCaptain    = document.getElementById("ov-captain-badge");
     const ovName       = document.getElementById("ov-name");
+    const ovCountry    = document.getElementById("ov-country");
     const ovClub       = document.getElementById("ov-club");
     const ovAge        = document.getElementById("ov-age");
     const ovCaps       = document.getElementById("ov-caps");
@@ -247,8 +249,13 @@
       // Captain
       ovCaptain.style.display = player.captain ? "inline-flex" : "none";
 
-      // Name & club
+      // Name, country & club
       ovName.textContent = player.fullName || player.name;
+      if (team && team.flag) {
+        ovCountry.innerHTML = `<img src="https://flagcdn.com/w20/${team.flag}.png" alt="${team.name}"> ${team.name}`;
+      } else {
+        ovCountry.textContent = team ? team.name : "";
+      }
       ovClub.textContent = player.club || "";
 
       // Stats
