@@ -810,6 +810,12 @@ div.country-card .country-card__name {
   font-size: 0.9rem;
   color: var(--text);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: color 0.1s;
+}
+
+.players-az__item:hover {
+  color: var(--accent);
 }
 
 /* ─── A–Z sidebar ────────────────────────────────────────────── */
