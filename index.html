@@ -22,13 +22,19 @@
 
   <main>
 
-    <div class="sort-control" role="group" aria-label="Sort teams by">
-      <button class="sort-control__btn is-active" data-sort="confederation">Confederation</button>
-      <button class="sort-control__btn" data-sort="ranking">FIFA Ranking</button>
-      <button class="sort-control__btn" data-sort="az">A–Z</button>
+    <div class="sort-control" role="group" aria-label="View mode">
+      <button class="sort-control__btn is-active" data-view="teams">Teams</button>
+      <button class="sort-control__btn" data-view="players">Players</button>
     </div>
 
-    <div id="conf-view">
+    <div id="teams-view">
+      <div class="tab-control" role="group" aria-label="Sort teams by">
+        <button class="tab-control__btn is-active" data-sort="confederation">Confederation</button>
+        <button class="tab-control__btn" data-sort="ranking">FIFA Ranking</button>
+        <button class="tab-control__btn" data-sort="az">A–Z</button>
+      </div>
+
+      <div id="conf-view">
 
     <!-- CONCACAF -->
     <section class="confederation">
@@ -264,10 +270,16 @@
       </div>
     </section>
 
-    </div><!-- /conf-view -->
+      </div><!-- /conf-view -->
 
-    <div id="flat-view" style="display:none">
-      <div class="countries-grid" id="flat-grid"></div>
+      <div id="flat-view" style="display:none">
+        <div class="countries-grid" id="flat-grid"></div>
+      </div>
+    </div><!-- /teams-view -->
+
+    <div id="players-view" style="display:none">
+      <div class="players-az" id="players-az-list"></div>
+      <div class="az-sidebar" id="az-sidebar"></div>
     </div>
 
   </main>
@@ -276,6 +288,7 @@
     <p>FIFA World Cup 2026 · USA, Canada &amp; Mexico · 48 Teams</p>
   </footer>
 
+  <script src="squads.js"></script>
   <script>
     (function () {
       const FIFA_RANK = {
@@ -291,19 +304,22 @@
         jordan:83,    uzbekistan:85, curacao:91,  haiti:97,   "new-zealand":102
       };
 
-      const confView = document.getElementById("conf-view");
-      const flatView = document.getElementById("flat-view");
-      const flatGrid = document.getElementById("flat-grid");
+      const confView    = document.getElementById("conf-view");
+      const flatView    = document.getElementById("flat-view");
+      const flatGrid    = document.getElementById("flat-grid");
+      const teamsView   = document.getElementById("teams-view");
+      const playersView = document.getElementById("players-view");
+      const playersList = document.getElementById("players-az-list");
+      const azSidebar   = document.getElementById("az-sidebar");
 
-      // Stamp data attributes onto every card once
       document.querySelectorAll("#conf-view .country-card").forEach(card => {
         const key = (card.getAttribute("href") || "").split("team=")[1] || "";
         if (FIFA_RANK[key]) card.dataset.rank = FIFA_RANK[key];
         card.dataset.name = card.querySelector(".country-card__name").textContent;
       });
 
-      function setView(sort) {
-        document.querySelectorAll(".sort-control__btn").forEach(b =>
+      function setSort(sort) {
+        document.querySelectorAll(".tab-control__btn").forEach(b =>
           b.classList.toggle("is-active", b.dataset.sort === sort)
         );
         if (sort === "confederation") {
@@ -334,15 +350,115 @@
         });
       }
 
-      document.querySelectorAll(".sort-control__btn").forEach(btn =>
+      let playerListBuilt = false;
+      function buildPlayerList() {
+        if (playerListBuilt) return;
+        playerListBuilt = true;
+        const seen = new Set();
+        const players = [];
+        Object.values(SQUADS).forEach(team => {
+          if (!team.players) return;
+          const raw = team.players;
+          const first = Object.values(raw)[0];
+          if (Array.isArray(first)) {
+            Object.values(raw).forEach(arr => arr.forEach(p => {
+              const n = (p.fullName || p.name || "").trim();
+              if (n && !seen.has(n)) { seen.add(n); players.push(n); }
+            }));
+          } else {
+            Object.values(raw).forEach(p => {
+              const n = (p.fullName || p.name || "").trim();
+              if (n && !seen.has(n)) { seen.add(n); players.push(n); }
+            });
+          }
+        });
+        players.sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
+
+        const groups = {};
+        players.forEach(name => {
+          const letter = name[0].toUpperCase();
+          if (!groups[letter]) groups[letter] = [];
+          groups[letter].push(name);
+        });
+
+        playersList.innerHTML = "";
+        Object.keys(groups).sort().forEach(letter => {
+          const section = document.createElement("div");
+          section.className = "players-az__section";
+          section.id = "az-" + letter;
+          const heading = document.createElement("div");
+          heading.className = "players-az__letter";
+          heading.textContent = letter;
+          section.appendChild(heading);
+          groups[letter].forEach(name => {
+            const item = document.createElement("div");
+            item.className = "players-az__item";
+            item.textContent = name;
+            section.appendChild(item);
+          });
+          playersList.appendChild(section);
+        });
+
+        azSidebar.innerHTML = "";
+        Object.keys(groups).sort().forEach(letter => {
+          const btn = document.createElement("button");
+          btn.className = "az-sidebar__letter";
+          btn.textContent = letter;
+          btn.setAttribute("aria-label", "Jump to " + letter);
+          btn.addEventListener("click", () => {
+            const el = document.getElementById("az-" + letter);
+            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+          azSidebar.appendChild(btn);
+        });
+
+        let dragging = false;
+        azSidebar.addEventListener("touchstart", e => { dragging = true; e.preventDefault(); }, { passive: false });
+        azSidebar.addEventListener("touchend", () => { dragging = false; });
+        azSidebar.addEventListener("touchmove", e => {
+          if (!dragging) return;
+          e.preventDefault();
+          const touch = e.touches[0];
+          const el = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (el && el.classList.contains("az-sidebar__letter")) el.click();
+        }, { passive: false });
+      }
+
+      function setTopView(view) {
+        document.querySelectorAll(".sort-control__btn").forEach(b =>
+          b.classList.toggle("is-active", b.dataset.view === view)
+        );
+        if (view === "players") {
+          teamsView.style.display = "none";
+          playersView.style.display = "";
+          buildPlayerList();
+        } else {
+          teamsView.style.display = "";
+          playersView.style.display = "none";
+        }
+      }
+
+      document.querySelectorAll(".tab-control__btn").forEach(btn =>
         btn.addEventListener("click", () => {
           sessionStorage.setItem("wc26_sort", btn.dataset.sort);
-          setView(btn.dataset.sort);
+          setSort(btn.dataset.sort);
         })
       );
 
-      const saved = sessionStorage.getItem("wc26_sort");
-      if (saved && saved !== "confederation") setView(saved);
+      document.querySelectorAll(".sort-control__btn").forEach(btn =>
+        btn.addEventListener("click", () => {
+          sessionStorage.setItem("wc26_view", btn.dataset.view);
+          setTopView(btn.dataset.view);
+        })
+      );
+
+      const savedView = sessionStorage.getItem("wc26_view");
+      const savedSort = sessionStorage.getItem("wc26_sort");
+      if (savedView && savedView !== "teams") {
+        setTopView(savedView);
+      } else if (savedSort && savedSort !== "confederation") {
+        setSort(savedSort);
+      }
 
       document.getElementById("clear-cache-btn").addEventListener("click", () => {
         Object.keys(sessionStorage)
