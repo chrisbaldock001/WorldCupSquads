@@ -590,6 +590,7 @@ div.country-card .country-card__name {
 .player-overlay__country {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
   font-size: 0.82rem;
   font-weight: 600;
