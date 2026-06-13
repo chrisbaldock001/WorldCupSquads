@@ -78,6 +78,23 @@
               <span class="player-overlay__stat-lbl">Position</span>
             </div>
           </div>
+          <div class="player-overlay__wc-section">
+            <div class="player-overlay__section-label">World Cup 2026</div>
+            <div class="player-overlay__stats">
+              <div class="player-overlay__stat">
+                <span class="player-overlay__stat-val" id="ov-wc-apps">—</span>
+                <span class="player-overlay__stat-lbl">Apps</span>
+              </div>
+              <div class="player-overlay__stat">
+                <span class="player-overlay__stat-val" id="ov-wc-goals">—</span>
+                <span class="player-overlay__stat-lbl">Goals</span>
+              </div>
+              <div class="player-overlay__stat">
+                <span class="player-overlay__stat-val" id="ov-wc-assists">—</span>
+                <span class="player-overlay__stat-lbl">Assists</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -97,6 +114,7 @@
     </div>
   </div>
 
+  <script src="wc26-stats.js"></script>
   <script src="squads.js"></script>
   <script>
     /* ── Helpers ─────────────────────────────────────────────── */
@@ -197,6 +215,9 @@
     const ovCaps       = document.getElementById("ov-caps");
     const ovPosVal     = document.getElementById("ov-pos-val");
     const ovCounter    = document.getElementById("ov-counter");
+    const ovWcApps     = document.getElementById("ov-wc-apps");
+    const ovWcGoals    = document.getElementById("ov-wc-goals");
+    const ovWcAssists  = document.getElementById("ov-wc-assists");
 
     function calcAge(born) {
       const b = new Date(born);
@@ -262,6 +283,13 @@
       ovAge.textContent  = player.born ? calcAge(player.born) : "—";
       ovCaps.textContent = (player.caps != null) ? player.caps : "—";
       ovPosVal.textContent = POS_FULL[pos] || pos || "—";
+
+      // World Cup 2026 stats
+      const wcKey = player.fullName || player.name;
+      const wc = (typeof WC26_STATS !== 'undefined') ? WC26_STATS[wcKey] : null;
+      ovWcApps.textContent    = wc ? (wc.apps    ?? 0) : "—";
+      ovWcGoals.textContent   = wc ? (wc.goals   ?? 0) : "—";
+      ovWcAssists.textContent = wc ? (wc.assists ?? 0) : "—";
 
       // Counter
       ovCounter.textContent = `${currentIdx + 1} / ${allPlayers.length}`;
