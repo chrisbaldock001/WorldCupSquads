@@ -176,6 +176,9 @@ function findMatchBlocks(wikitext) {
 
 // Parse goal/assist entries from a goals1 or goals2 parameter value.
 // Returns [{wikiName, type: 'goal'|'assist'}]
+// Handles two formats used by Wikipedia:
+//   Format A (older articles): {{goal|45'}} [[Player]] or [[Player]] {{goal|45'}}
+//   Format B (WC 2026 group pages): *[[Player|Display]] 45'
 function parseGoalField(text) {
   if (!text) return [];
   const results = [];
@@ -183,19 +186,32 @@ function parseGoalField(text) {
   for (let entry of entries) {
     entry = entry.trim();
     if (!entry) continue;
-    if (/\{\{goal\|[^}]*\bog\b/i.test(entry)) continue; // own goal — skip
+
+    const isOwnGoal = /\{\{goal\|[^}]*\bog\b/i.test(entry) || /\bO\.?G\.?\b/i.test(entry);
+    if (isOwnGoal) continue;
+
     const links = [...entry.matchAll(/\[\[([^\]|#:]+?)(?:\|[^\]]+)?\]\]/g)].map(m => m[1].trim());
     const goalCount = (entry.match(/\{\{goal/gi) || []).length;
+
     if (goalCount > 0 && links[0]) {
+      // Format A: {{goal}} template present
       for (let k = 0; k < goalCount; k++) results.push({ wikiName: links[0], type: 'goal' });
-      // Assister appears as 2nd wiki link after the last {{goal}}
       const afterLastGoal = entry.replace(/^[\s\S]*\{\{goal[^}]*\}\}/, '');
       const assistLink = afterLastGoal.match(/\[\[([^\]|#:]+?)(?:\|[^\]]+)?\]\]/);
       if (assistLink && assistLink[1].trim() !== links[0]) {
         results.push({ wikiName: assistLink[1].trim(), type: 'assist' });
       }
+    } else if (entry.startsWith('*') && links[0] && /\d+'/.test(entry)) {
+      // Format B: *[[Player|Display]] 45'
+      results.push({ wikiName: links[0], type: 'goal' });
+      // Assist may appear as: ([[Assister|Display]])
+      const assistParen = entry.match(/\((?:[^)]*?\[\[([^\]|#:]+?)(?:\|[^\]]+)?\]\][^)]*?)\)/);
+      if (assistParen && assistParen[1].trim() !== links[0]) {
+        results.push({ wikiName: assistParen[1].trim(), type: 'assist' });
+      }
     }
-    if (/\{\{assist/i.test(entry) && links[0]) {
+
+    if (/\{\{assist/i.test(entry) && links[0] && goalCount === 0) {
       results.push({ wikiName: links[0], type: 'assist' });
     }
   }
