@@ -75,13 +75,17 @@ Object.values(SQUADS).forEach(team => {
   flat.forEach(p => {
     const full = p.fullName || p.name;
     if (full) nameMap.set(norm(full), full);
+    // Index by Wikipedia article name so "Vinícius Júnior" matches via wiki field
+    if (p.wiki) nameMap.set(norm(p.wiki.replace(/_/g, ' ')), full);
   });
 });
 console.log(`Loaded ${nameMap.size} players from SQUADS.`);
 
 function findPlayer(wikiName) {
   if (!wikiName) return null;
-  const n = norm(wikiName);
+  // Strip Wikipedia disambiguation suffix: "Foo (footballer)" → "Foo"
+  const cleaned = wikiName.replace(/\s*\([^)]+\)\s*$/, '').trim();
+  const n = norm(cleaned);
   if (nameMap.has(n)) return nameMap.get(n);
   const last = n.split(' ').pop();
   const hits = [...nameMap.entries()].filter(([k]) => k === last || k.endsWith(' ' + last));
