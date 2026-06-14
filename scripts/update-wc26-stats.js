@@ -140,6 +140,12 @@ async function main() {
   }
 
   // 2. Process goals/assists from the list response directly (no extra API calls needed)
+  // Dump the first match's raw goals so we can verify the API response structure.
+  if (matches[0]?.goals?.length) {
+    console.log('  Sample goal entry:', JSON.stringify(matches[0].goals[0]));
+  } else {
+    console.log('  First match goals array:', JSON.stringify(matches[0]?.goals ?? null));
+  }
   for (const m of matches) {
     const label = `${m.homeTeam?.shortName || m.homeTeam?.name} ${m.score?.fullTime?.home ?? '?'}–${m.score?.fullTime?.away ?? '?'} ${m.awayTeam?.shortName || m.awayTeam?.name}`;
     let goalCount = 0, assistCount = 0;
@@ -149,11 +155,10 @@ async function main() {
       if (scorer)   { bump(scorer,   'goals');   goalCount++;   }
       if (assister) { bump(assister, 'assists'); assistCount++; }
     }
-    console.log(`${label} — Goals matched: ${goalCount}  Assists matched: ${assistCount}`);
+    console.log(`${label} — Goals matched: ${goalCount}/${(m.goals||[]).length}  Assists matched: ${assistCount}`);
   }
 
   // 3. Fetch per-match detail for lineups (appearances)
-  //    Diagnose the response shape on the first match so we can see what keys are returned.
   console.log('\nFetching match details for lineup/appearance data...');
   for (let i = 0; i < matches.length; i++) {
     const m = matches[i];
@@ -167,12 +172,15 @@ async function main() {
       continue;
     }
 
-    // On the first match, log the top-level keys so we can see the response shape
+    // On the first match, log the response shape
     if (i === 0) {
       console.log('  Detail response keys:', Object.keys(detail));
       const matchObj = detail.match || detail;
       console.log('  goals length:', (matchObj.goals || []).length);
       console.log('  lineups length:', (matchObj.lineups || []).length);
+      if ((matchObj.lineups || []).length > 0) {
+        console.log('  lineup[0] keys:', Object.keys(matchObj.lineups[0]));
+      }
     }
 
     // Handle both { goals, lineups } and { match: { goals, lineups } } response shapes
@@ -191,7 +199,6 @@ async function main() {
     if (appearedThisMatch.size > 0) {
       console.log(`  [${i + 1}] ${appearedThisMatch.size} players logged from lineups`);
     }
-  }
   }
 
   writeStats(stats, matches.length, new Date().toISOString());
