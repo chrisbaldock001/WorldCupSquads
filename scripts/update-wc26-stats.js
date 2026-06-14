@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 /**
- * Fetches completed World Cup 2026 match data from api-football.com and
- * writes aggregated player stats to wc26-stats.js.
+ * Scrapes WC 2026 player stats from Wikipedia group stage articles and
+ * individual match pages. No API key required.
  *
- * Env: API_FOOTBALL_API_KEY  (from api-football.com — apisports.io)
- * Free tier: 100 req/day, 10 req/min.
+ * Per group page:  1 Wikipedia API call
+ * Per new match:   1 call for the individual match article (lineups)
+ * Processed match IDs are persisted in wc26-stats.js so each match is
+ * only fetched once on daily runs.
  *
- * Each new match costs 2 calls (events + lineups). Processed match IDs are
- * persisted in wc26-stats.js so each match is only fetched once.
- *
- * Stats: apps, goals, assists.
+ * Stats: goals, assists (from group pages) + apps (from match lineups).
  */
 
 const https = require('https');
@@ -17,17 +16,11 @@ const fs    = require('fs');
 const path  = require('path');
 const vm    = require('vm');
 
-const API_KEY   = process.env.API_FOOTBALL_API_KEY;
 const ROOT      = path.resolve(__dirname, '..');
 const STATS_OUT = path.join(ROOT, 'wc26-stats.js');
-const LEAGUE_ID = 1;    // FIFA World Cup on api-football.com
-const SEASON    = 2026;
-const DELAY_MS  = 7000; // stay comfortably under 10 req/min
-
-if (!API_KEY) {
-  console.error('Error: API_FOOTBALL_API_KEY environment variable not set.');
-  process.exit(1);
-}
+const DELAY_MS  = 1200;   // polite delay between Wikipedia requests
+const YEAR      = '2026';
+const GROUPS    = 'ABCDEFGHIJKL'.split(''); // 12 groups for 48-team WC
 
 // ── Load SQUADS ───────────────────────────────────────────────────────────────
 
@@ -37,16 +30,15 @@ const sandboxSquads = { SQUADS: undefined };
 vm.createContext(sandboxSquads);
 vm.runInContext(squadsCode, sandboxSquads);
 const SQUADS = sandboxSquads.SQUADS;
-
 if (!SQUADS || !Object.keys(SQUADS).length) {
   console.error('Failed to load SQUADS from squads.js');
   process.exit(1);
 }
 
-// ── Load existing stats and processed match IDs ───────────────────────────────
+// ── Load existing stats & processed match IDs ─────────────────────────────────
 
-let existingStats = {};
-let processedIds  = new Set();
+let existingStats     = {};
+let existingProcessed = [];
 if (fs.existsSync(STATS_OUT)) {
   try {
     const code = fs.readFileSync(STATS_OUT, 'utf8')
@@ -55,15 +47,15 @@ if (fs.existsSync(STATS_OUT)) {
     const sb = { WC26_STATS: {}, WC26_PROCESSED: [] };
     vm.createContext(sb);
     vm.runInContext(code, sb);
-    existingStats = sb.WC26_STATS  || {};
-    processedIds  = new Set(sb.WC26_PROCESSED || []);
-    console.log(`Resumed: ${Object.keys(existingStats).length} players, ${processedIds.size} matches already processed.`);
+    existingStats     = sb.WC26_STATS    || {};
+    existingProcessed = sb.WC26_PROCESSED || [];
+    console.log(`Resumed: ${Object.keys(existingStats).length} players, ${existingProcessed.length} processed matches`);
   } catch (e) {
     console.warn('Could not parse existing stats, starting fresh:', e.message);
   }
 }
 
-// ── Normalised name matching ───────────────────────────────────────────────────
+// ── Name normalisation & matching ─────────────────────────────────────────────
 
 function norm(s) {
   return (s || '')
@@ -77,7 +69,7 @@ function norm(s) {
 const nameMap = new Map();
 Object.values(SQUADS).forEach(team => {
   if (!team.players) return;
-  const raw  = team.players;
+  const raw   = team.players;
   const first = Object.values(raw)[0];
   const flat  = Array.isArray(first) ? Object.values(raw).flat() : Object.values(raw);
   flat.forEach(p => {
@@ -87,41 +79,44 @@ Object.values(SQUADS).forEach(team => {
 });
 console.log(`Loaded ${nameMap.size} players from SQUADS.`);
 
-function findPlayer(apiName) {
-  if (!apiName) return null;
-  const n = norm(apiName);
+function findPlayer(wikiName) {
+  if (!wikiName) return null;
+  const n = norm(wikiName);
   if (nameMap.has(n)) return nameMap.get(n);
   const last = n.split(' ').pop();
   const hits = [...nameMap.entries()].filter(([k]) => k === last || k.endsWith(' ' + last));
   return hits.length === 1 ? hits[0][1] : null;
 }
 
-// ── HTTP helper ───────────────────────────────────────────────────────────────
+// ── Wikipedia API ─────────────────────────────────────────────────────────────
 
-function apiGet(endpoint) {
+function wikiGet(title) {
   return new Promise((resolve, reject) => {
+    const qs = new URLSearchParams({
+      action:        'parse',
+      page:          title,
+      prop:          'wikitext',
+      format:        'json',
+      formatversion: '2',
+    });
     https.get(
       {
-        hostname: 'v3.football.api-sports.io',
-        path:     endpoint,
-        headers:  { 'x-apisports-key': API_KEY },
+        hostname: 'en.wikipedia.org',
+        path:     `/w/api.php?${qs}`,
+        headers:  { 'User-Agent': 'WorldCupSquadsBot/1.0 (https://github.com/chrisbaldock001/WorldCupSquads)' },
       },
       res => {
         let body = '';
         res.on('data', d => (body += d));
         res.on('end', () => {
-          if (res.statusCode !== 200) {
-            return reject(new Error(`HTTP ${res.statusCode}: ${body.slice(0, 200)}`));
-          }
           try {
-            const parsed = JSON.parse(body);
-            if (parsed.errors && Object.keys(parsed.errors).length) {
-              return reject(new Error('API error: ' + JSON.stringify(parsed.errors)));
+            const data = JSON.parse(body);
+            if (data.error) {
+              if (data.error.code === 'missingtitle') return resolve(null);
+              return reject(new Error(data.error.info || data.error.code));
             }
-            resolve(parsed);
-          } catch (e) {
-            reject(new Error('JSON parse: ' + e.message));
-          }
+            resolve(data.parse?.wikitext ?? null);
+          } catch (e) { reject(new Error('JSON: ' + e.message)); }
         });
       }
     ).on('error', reject);
@@ -130,114 +125,224 @@ function apiGet(endpoint) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// ── Wikitext parsing ──────────────────────────────────────────────────────────
+
+// Extract the display-name portion from a wiki link like [[Team|Display]] or [[Team]]
+function extractTeamName(raw) {
+  const m = raw.match(/\[\[[^\]|]+\|([^\]]+)\]\]/);
+  if (m) return m[1].trim();
+  const m2 = raw.match(/\[\[([^\]|]+)\]\]/);
+  if (m2) return m2[1].replace(/ national football team$/, '').trim();
+  return raw.replace(/\{\{[^}]+\}\}/g, '').replace(/\[|\]/g, '').trim();
+}
+
+// Pull a named parameter from a template block (handles multi-line values)
+function getParam(block, name) {
+  const lines = block.split('\n');
+  let capturing = false;
+  const acc = [];
+  for (const line of lines) {
+    if (capturing) {
+      if (/^\s*[\|]/.test(line) || /^\s*\}\}/.test(line)) break;
+      acc.push(line);
+    } else {
+      const m = line.match(new RegExp(`^\\|\\s*${name}\\s*=(.*)`, 'i'));
+      if (m) { capturing = true; acc.push(m[1]); }
+    }
+  }
+  return acc.join('\n').trim();
+}
+
+// Find all {{football box ...}} or {{fb match ...}} template blocks
+function findMatchBlocks(wikitext) {
+  const blocks = [];
+  let i = 0;
+  while (i < wikitext.length) {
+    const start = wikitext.indexOf('{{', i);
+    if (start === -1) break;
+    const peek = wikitext.slice(start + 2, start + 60).trimStart();
+    if (!/^(?:football box|fb match)\b/i.test(peek)) { i = start + 2; continue; }
+    let depth = 2, j = start + 2;
+    while (j < wikitext.length && depth > 0) {
+      if (wikitext[j] === '{' && wikitext[j+1] === '{') { depth += 2; j += 2; }
+      else if (wikitext[j] === '}' && wikitext[j+1] === '}') { depth -= 2; j += 2; }
+      else j++;
+    }
+    blocks.push(wikitext.slice(start, j));
+    i = j;
+  }
+  return blocks;
+}
+
+// Parse goal/assist entries from a goals1 or goals2 parameter value.
+// Returns [{wikiName, type: 'goal'|'assist'}]
+function parseGoalField(text) {
+  if (!text) return [];
+  const results = [];
+  const entries = text.replace(/<br\s*\/?>/gi, '\n').split('\n');
+  for (let entry of entries) {
+    entry = entry.trim();
+    if (!entry) continue;
+    if (/\{\{goal\|[^}]*\bog\b/i.test(entry)) continue; // own goal — skip
+    const links = [...entry.matchAll(/\[\[([^\]|#:]+?)(?:\|[^\]]+)?\]\]/g)].map(m => m[1].trim());
+    const goalCount = (entry.match(/\{\{goal/gi) || []).length;
+    const hasAssist = /\{\{assist/i.test(entry);
+    if (goalCount > 0 && links[0]) {
+      for (let k = 0; k < goalCount; k++) results.push({ wikiName: links[0], type: 'goal' });
+      // Assister appears as 2nd wiki link after the last {{goal}} instance
+      const afterLastGoal = entry.replace(/^[\s\S]*\{\{goal[^}]*\}\}/, '');
+      const assistLink = afterLastGoal.match(/\[\[([^\]|#:]+?)(?:\|[^\]]+)?\]\]/);
+      if (assistLink && assistLink[1].trim() !== links[0]) {
+        results.push({ wikiName: assistLink[1].trim(), type: 'assist' });
+      }
+    }
+    if (hasAssist && links[0]) results.push({ wikiName: links[0], type: 'assist' });
+  }
+  return results;
+}
+
+// Parse player names from lineup templates on individual match pages.
+// Handles: {{fc player|POS|NUM|[[Name|Display]]}} and {{fs player|NUM|POS|[[Name]]}}
+function parseLineupPlayers(wikitext) {
+  const names = new Set();
+  const patterns = [
+    /\{\{(?:fc|fs|fb) player\|[^|]+\|[^|]+\|\[\[([^\]|#:]+)/gi,
+    /\{\{football player\|[^|]+\|[^|]+\|\[\[([^\]|#:]+)/gi,
+  ];
+  for (const re of patterns) {
+    for (const m of wikitext.matchAll(re)) names.add(m[1].trim());
+  }
+  return [...names];
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const stats = { ...existingStats };
-  const bump = (name, field) => {
-    if (!name) return;
-    if (!stats[name]) stats[name] = { apps: 0, goals: 0, assists: 0 };
-    stats[name][field]++;
-  };
+  const stats        = { ...existingStats };
+  const processedSet = new Set(existingProcessed);
+  const unmatched    = new Set();
+  let   newMatches   = 0;
 
-  // 1. Fetch all finished WC 2026 fixtures (1 API call)
-  console.log(`\nFetching finished WC ${SEASON} fixtures (league ${LEAGUE_ID})...`);
-  let fixtures;
-  try {
-    const data = await apiGet(`/fixtures?league=${LEAGUE_ID}&season=${SEASON}&status=FT`);
-    fixtures = data.response || [];
-    console.log(`  ${fixtures.length} finished fixture(s) found.`);
-    if (fixtures.length === 0) {
-      console.log('  Tip: verify LEAGUE_ID is correct at api-football.com/documentation');
-    }
-  } catch (e) {
-    console.error('Failed to fetch fixtures:', e.message);
-    process.exit(1);
+  function bump(wikiName, type) {
+    const canonical = findPlayer(wikiName);
+    if (!canonical) { unmatched.add(wikiName); return; }
+    if (!stats[canonical]) stats[canonical] = { apps: 0, goals: 0, assists: 0 };
+    if (type === 'goal')   stats[canonical].goals++;
+    if (type === 'assist') stats[canonical].assists++;
+    if (type === 'app')    stats[canonical].apps++;
   }
 
-  const newFixtures = fixtures.filter(f => !processedIds.has(f.fixture.id));
-  console.log(`  ${newFixtures.length} new fixture(s) to process.\n`);
-
-  if (newFixtures.length === 0) {
-    writeStats(stats, processedIds, fixtures.length, new Date().toISOString());
-    return;
-  }
-
-  // 2. For each new fixture: events (goals/assists) + lineups (appearances)
-  for (let i = 0; i < newFixtures.length; i++) {
-    const f   = newFixtures[i];
-    const fid = f.fixture.id;
-    const label = `${f.teams.home.name} ${f.goals.home ?? '?'}–${f.goals.away ?? '?'} ${f.teams.away.name}`;
-    console.log(`[${i + 1}/${newFixtures.length}] ${label}`);
-
-    if (i > 0) await sleep(DELAY_MS);
-
-    // Events — goals and assists
-    let goalCount = 0, assistCount = 0;
-    try {
-      const evData = await apiGet(`/fixtures/events?fixture=${fid}&type=Goal`);
-      if (i === 0) {
-        const sample = (evData.response || [])[0];
-        if (sample) console.log('  Sample event:', JSON.stringify(sample));
-        else        console.log('  Events response (empty):', JSON.stringify(evData.response));
-      }
-      for (const ev of (evData.response || [])) {
-        if (ev.detail === 'Own Goal') continue;
-        const scorer   = findPlayer(ev.player?.name);
-        const assister = findPlayer(ev.assist?.name);
-        if (scorer)   { bump(scorer,   'goals');   goalCount++;   }
-        if (assister) { bump(assister, 'assists'); assistCount++; }
-      }
-    } catch (e) {
-      console.warn(`  Events error: ${e.message}`);
-    }
-
+  for (const group of GROUPS) {
+    const pageTitle = `${YEAR} FIFA World Cup Group ${group}`;
     await sleep(DELAY_MS);
 
-    // Lineups — appearances
-    let appCount = 0;
-    const appeared = new Set();
+    let wikitext;
     try {
-      const luData = await apiGet(`/fixtures/lineups?fixture=${fid}`);
-      if (i === 0) {
-        const sample = (luData.response || [])[0];
-        if (sample) console.log('  Sample lineup:', sample.team?.name, '| startXI[0]:', JSON.stringify(sample.startXI?.[0]));
-        else        console.log('  Lineups response (empty):', JSON.stringify(luData.response));
-      }
-      for (const team of (luData.response || [])) {
-        for (const entry of [...(team.startXI || []), ...(team.substitutes || [])]) {
-          const name = findPlayer(entry.player?.name);
-          if (name && !appeared.has(name)) {
-            appeared.add(name);
-            bump(name, 'apps');
-            appCount++;
-          }
-        }
-      }
+      wikitext = await wikiGet(pageTitle);
     } catch (e) {
-      console.warn(`  Lineups error: ${e.message}`);
+      console.warn(`Group ${group}: ${e.message}`);
+      continue;
+    }
+    if (!wikitext) { console.log(`Group ${group}: page not found yet`); continue; }
+
+    const blocks = findMatchBlocks(wikitext);
+    if (blocks.length === 0) { console.log(`Group ${group}: no match blocks found`); continue; }
+    console.log(`\nGroup ${group}: ${blocks.length} block(s) found`);
+
+    // Diagnostic on first group's first block
+    if (group === GROUPS[0] && blocks[0]) {
+      console.log('  [diag] block start:', blocks[0].slice(0, 300).replace(/\n/g, ' ↵ '));
+      console.log('  [diag] goals1:', getParam(blocks[0], 'goals1').slice(0, 150));
+      console.log('  [diag] report:', getParam(blocks[0], 'report').slice(0, 100));
     }
 
-    console.log(`  Goals: ${goalCount}  Assists: ${assistCount}  Apps: ${appCount}`);
-    processedIds.add(fid);
+    for (let bi = 0; bi < blocks.length; bi++) {
+      const block = blocks[bi];
+
+      // Build match ID from date + teams (enough to uniquely identify)
+      const dateRaw  = getParam(block, 'date');
+      const team1Raw = getParam(block, 'team1');
+      const team2Raw = getParam(block, 'team2');
+      const dateKey  = dateRaw.replace(/[^0-9]/g, '').slice(0, 8);
+      const t1key    = extractTeamName(team1Raw).replace(/[^a-z]/gi, '').toLowerCase().slice(0, 6);
+      const t2key    = extractTeamName(team2Raw).replace(/[^a-z]/gi, '').toLowerCase().slice(0, 6);
+      const matchId  = `${YEAR}-${group}-${dateKey}-${t1key}-${t2key}`;
+
+      if (processedSet.has(matchId)) {
+        console.log(`  [${bi+1}] Already done: ${matchId}`);
+        continue;
+      }
+
+      // Skip matches with no score (not yet played)
+      const scoreRaw = getParam(block, 'score');
+      if (!scoreRaw || !/\d/.test(scoreRaw)) {
+        console.log(`  [${bi+1}] No score yet — skipping`);
+        continue;
+      }
+
+      // Goals & assists
+      const g1 = parseGoalField(getParam(block, 'goals1'));
+      const g2 = parseGoalField(getParam(block, 'goals2'));
+      let goalCount = 0, assistCount = 0;
+      for (const { wikiName, type } of [...g1, ...g2]) {
+        bump(wikiName, type);
+        if (type === 'goal') goalCount++;
+        else assistCount++;
+      }
+
+      // Individual match page for lineup/appearances
+      const reportRaw   = getParam(block, 'report');
+      const reportTitle = reportRaw.match(/\[\[([^\]|#]+)/)?.[1]?.trim();
+      let appCount = 0;
+      if (reportTitle) {
+        await sleep(DELAY_MS);
+        try {
+          const matchText = await wikiGet(reportTitle);
+          if (matchText) {
+            const players = parseLineupPlayers(matchText);
+            const seen = new Set();
+            for (const wikiName of players) {
+              if (!seen.has(wikiName)) { seen.add(wikiName); bump(wikiName, 'app'); appCount++; }
+            }
+            if (players.length === 0) {
+              // Diagnostics for the first unresolved lineup page
+              console.log(`    [diag] No lineups found on "${reportTitle}". Page snippet:`);
+              console.log('    ', matchText.slice(0, 400).replace(/\n/g, ' ↵ '));
+            }
+          } else {
+            console.log(`    Lineup page not found: "${reportTitle}"`);
+          }
+        } catch (e) {
+          console.warn(`    Lineup error: ${e.message}`);
+        }
+      }
+
+      console.log(`  [${bi+1}] ${matchId} — Goals: ${goalCount}  Assists: ${assistCount}  Apps: ${appCount}`);
+      processedSet.add(matchId);
+      newMatches++;
+    }
   }
 
-  writeStats(stats, processedIds, fixtures.length, new Date().toISOString());
+  if (unmatched.size) {
+    const top = [...unmatched].slice(0, 30).join(', ');
+    console.log(`\nUnmatched names (${unmatched.size} total): ${top}`);
+  }
+
+  writeStats(stats, [...processedSet], newMatches, new Date().toISOString());
 }
 
-function writeStats(stats, processedSet, totalMatches, ts) {
-  const processedArr = [...processedSet];
-  const playerCount  = Object.keys(stats).length;
+function writeStats(stats, processedArr, newCount, ts) {
+  const playerCount = Object.keys(stats).length;
   const lines = [
     `// Auto-generated by scripts/update-wc26-stats.js — do not edit manually`,
     `// Last updated: ${ts}`,
-    `// Matches processed: ${processedArr.length}/${totalMatches} · Players with data: ${playerCount}`,
+    `// Processed: ${processedArr.length} matches (${newCount} new this run) · Players: ${playerCount}`,
     `const WC26_PROCESSED = ${JSON.stringify(processedArr)};`,
     `const WC26_STATS = ${JSON.stringify(stats, null, 2)};`,
     '',
   ];
   fs.writeFileSync(STATS_OUT, lines.join('\n'), 'utf8');
-  console.log(`\nWrote ${playerCount} players, ${processedArr.length}/${totalMatches} matches → ${STATS_OUT}`);
+  console.log(`\nWrote ${playerCount} players, ${processedArr.length} matches → ${STATS_OUT}`);
 }
 
 main().catch(e => { console.error('Fatal:', e.message); process.exit(1); });
