@@ -21,6 +21,7 @@ const STATS_OUT = path.join(ROOT, 'wc26-stats.js');
 const DELAY_MS  = 1200;   // polite delay between Wikipedia requests
 const YEAR      = '2026';
 const GROUPS    = 'ABCDEFGHIJKL'.split(''); // 12 groups for 48-team WC
+const MAIN_PAGE = `${YEAR} FIFA World Cup`;
 
 // ── Load SQUADS ───────────────────────────────────────────────────────────────
 
@@ -232,105 +233,131 @@ async function main() {
     if (type === 'app')    stats[canonical].apps++;
   }
 
+  // ── Step 1: collect match article titles ────────────────────────────────────
+  // Strategy A: main WC article links to all individual match pages.
+  // Strategy B: group pages (tried first — may use {{football box}} even if intro doesn't).
+
+  const matchTitles = new Set(); // Wikipedia article titles for individual matches
+
+  // Strategy A — main article
+  console.log(`\nFetching main page: ${MAIN_PAGE}`);
+  await sleep(DELAY_MS);
+  try {
+    const mainText = await wikiGet(MAIN_PAGE);
+    if (mainText) {
+      // Extract links that look like individual match articles: "Foo v Bar (2026 FIFA World Cup)"
+      const linkRe = /\[\[([^\]|#]+\sv\s[^\]|#]+\(${YEAR} FIFA World Cup\)[^\]]*)/gi;
+      for (const m of mainText.matchAll(linkRe)) matchTitles.add(m[1].trim());
+
+      // Also pick up match blocks embedded directly in the main article
+      const mainBlocks = findMatchBlocks(mainText);
+      console.log(`  Main article: ${matchTitles.size} match links, ${mainBlocks.length} embedded match blocks`);
+      if (mainBlocks.length > 0) {
+        console.log('  [diag] First embedded block (300 chars):', mainBlocks[0].slice(0, 300).replace(/\n/g, ' ↵ '));
+      }
+      if (matchTitles.size > 0) {
+        console.log('  [diag] Sample match links:', [...matchTitles].slice(0, 3).join(' | '));
+      }
+      // If no links found, dump a snippet to see what's there
+      if (matchTitles.size === 0 && mainBlocks.length === 0) {
+        console.log('  [diag] No match links or blocks. Snippet (chars 2000-3000):');
+        console.log('  ', mainText.slice(2000, 3000).replace(/\n/g, ' ↵ '));
+      }
+    } else {
+      console.log('  Main page not found!');
+    }
+  } catch (e) {
+    console.warn(`  Main page error: ${e.message}`);
+  }
+
+  // Strategy B — group pages (find match blocks OR extract report/match links)
   for (const group of GROUPS) {
     const pageTitle = `${YEAR} FIFA World Cup Group ${group}`;
     await sleep(DELAY_MS);
-
     let wikitext;
-    try {
-      wikitext = await wikiGet(pageTitle);
-    } catch (e) {
-      console.warn(`Group ${group}: ${e.message}`);
-      continue;
-    }
-    if (!wikitext) { console.log(`Group ${group}: page not found yet`); continue; }
+    try { wikitext = await wikiGet(pageTitle); } catch (e) { continue; }
+    if (!wikitext) continue;
 
+    // Find embedded {{football box}} blocks
     const blocks = findMatchBlocks(wikitext);
-    if (blocks.length === 0) {
-      // Dump first 800 chars of wikitext so we can see which template format is in use
-      console.log(`Group ${group}: no match blocks found. Wikitext start:`);
-      console.log(wikitext.slice(0, 800).replace(/\n/g, ' ↵ '));
-      continue;
-    }
-    console.log(`\nGroup ${group}: ${blocks.length} block(s) found`);
-
-    // Diagnostic on first group's first block
-    if (group === GROUPS[0] && blocks[0]) {
-      console.log('  [diag] block start:', blocks[0].slice(0, 300).replace(/\n/g, ' ↵ '));
-      console.log('  [diag] goals1:', getParam(blocks[0], 'goals1').slice(0, 150));
-      console.log('  [diag] report:', getParam(blocks[0], 'report').slice(0, 100));
+    for (const block of blocks) {
+      const reportRaw = getParam(block, 'report');
+      const t = reportRaw.match(/\[\[([^\]|#]+)/)?.[1]?.trim();
+      if (t) matchTitles.add(t);
     }
 
-    for (let bi = 0; bi < blocks.length; bi++) {
-      const block = blocks[bi];
+    // Also search for any wikilinks matching the match-article pattern
+    const linkRe = /\[\[([^\]|#]+\sv\s[^\]|#]+\(${YEAR} FIFA World Cup\)[^\]]*)/gi;
+    for (const m of wikitext.matchAll(linkRe)) matchTitles.add(m[1].trim());
 
-      // Build match ID from date + teams (enough to uniquely identify)
-      const dateRaw  = getParam(block, 'date');
-      const team1Raw = getParam(block, 'team1');
-      const team2Raw = getParam(block, 'team2');
-      const dateKey  = dateRaw.replace(/[^0-9]/g, '').slice(0, 8);
-      const t1key    = extractTeamName(team1Raw).replace(/[^a-z]/gi, '').toLowerCase().slice(0, 6);
-      const t2key    = extractTeamName(team2Raw).replace(/[^a-z]/gi, '').toLowerCase().slice(0, 6);
-      const matchId  = `${YEAR}-${group}-${dateKey}-${t1key}-${t2key}`;
-
-      if (processedSet.has(matchId)) {
-        console.log(`  [${bi+1}] Already done: ${matchId}`);
-        continue;
-      }
-
-      // Skip matches with no score (not yet played)
-      const scoreRaw = getParam(block, 'score');
-      if (!scoreRaw || !/\d/.test(scoreRaw)) {
-        console.log(`  [${bi+1}] No score yet — skipping`);
-        continue;
-      }
-
-      // Goals & assists
-      const g1 = parseGoalField(getParam(block, 'goals1'));
-      const g2 = parseGoalField(getParam(block, 'goals2'));
-      let goalCount = 0, assistCount = 0;
-      for (const { wikiName, type } of [...g1, ...g2]) {
-        bump(wikiName, type);
-        if (type === 'goal') goalCount++;
-        else assistCount++;
-      }
-
-      // Individual match page for lineup/appearances
-      const reportRaw   = getParam(block, 'report');
-      const reportTitle = reportRaw.match(/\[\[([^\]|#]+)/)?.[1]?.trim();
-      let appCount = 0;
-      if (reportTitle) {
-        await sleep(DELAY_MS);
-        try {
-          const matchText = await wikiGet(reportTitle);
-          if (matchText) {
-            const players = parseLineupPlayers(matchText);
-            const seen = new Set();
-            for (const wikiName of players) {
-              if (!seen.has(wikiName)) { seen.add(wikiName); bump(wikiName, 'app'); appCount++; }
-            }
-            if (players.length === 0) {
-              // Diagnostics for the first unresolved lineup page
-              console.log(`    [diag] No lineups found on "${reportTitle}". Page snippet:`);
-              console.log('    ', matchText.slice(0, 400).replace(/\n/g, ' ↵ '));
-            }
-          } else {
-            console.log(`    Lineup page not found: "${reportTitle}"`);
-          }
-        } catch (e) {
-          console.warn(`    Lineup error: ${e.message}`);
-        }
-      }
-
-      console.log(`  [${bi+1}] ${matchId} — Goals: ${goalCount}  Assists: ${assistCount}  Apps: ${appCount}`);
-      processedSet.add(matchId);
-      newMatches++;
+    // Log template names on first group that has content beyond the intro
+    if (group === GROUPS[0]) {
+      const templates = [...wikitext.matchAll(/\{\{([^\n|{}<>]{1,50})/g)]
+        .map(m => m[1].trim()).filter(n => /match|result|football|fb |score/i.test(n));
+      if (templates.length) console.log(`  Group ${group} match-related templates:`, [...new Set(templates)].slice(0, 8).join(', '));
     }
   }
 
+  console.log(`\nTotal individual match articles to process: ${matchTitles.size}`);
+
+  // ── Step 2: process each match article ──────────────────────────────────────
+  const titleArr = [...matchTitles];
+  let first = true;
+  for (let i = 0; i < titleArr.length; i++) {
+    const title = titleArr[i];
+    if (processedSet.has(title)) { console.log(`  [${i+1}/${titleArr.length}] Already done: ${title}`); continue; }
+
+    await sleep(DELAY_MS);
+    let wikitext;
+    try { wikitext = await wikiGet(title); } catch (e) { console.warn(`  Fetch error for "${title}": ${e.message}`); continue; }
+    if (!wikitext) { console.log(`  Page not found: "${title}"`); continue; }
+
+    const blocks = findMatchBlocks(wikitext);
+    if (blocks.length === 0) {
+      if (first) {
+        console.log(`  [diag] No blocks on "${title}". Snippet (0-600):`);
+        console.log('  ', wikitext.slice(0, 600).replace(/\n/g, ' ↵ '));
+        first = false;
+      }
+      console.log(`  [${i+1}] No match block on "${title}" — skipping`);
+      continue;
+    }
+
+    const block = blocks[0]; // match article has one block at the top
+    if (first) {
+      console.log(`  [diag] Block on "${title}" (300 chars):`, block.slice(0, 300).replace(/\n/g, ' ↵ '));
+      console.log('  [diag] goals1:', getParam(block, 'goals1').slice(0, 200));
+      first = false;
+    }
+
+    // Skip if no score yet
+    const score = getParam(block, 'score');
+    if (!score || !/\d/.test(score)) { console.log(`  [${i+1}] No score — skipping`); continue; }
+
+    // Goals & assists
+    const g1 = parseGoalField(getParam(block, 'goals1'));
+    const g2 = parseGoalField(getParam(block, 'goals2'));
+    let goalCount = 0, assistCount = 0;
+    for (const { wikiName, type } of [...g1, ...g2]) {
+      bump(wikiName, type);
+      if (type === 'goal') goalCount++; else assistCount++;
+    }
+
+    // Lineups
+    const players = parseLineupPlayers(wikitext);
+    const seen = new Set();
+    let appCount = 0;
+    for (const wikiName of players) {
+      if (!seen.has(wikiName)) { seen.add(wikiName); bump(wikiName, 'app'); appCount++; }
+    }
+
+    console.log(`  [${i+1}] "${title}" — Goals: ${goalCount}  Assists: ${assistCount}  Apps: ${appCount}`);
+    processedSet.add(title);
+    newMatches++;
+  }
+
   if (unmatched.size) {
-    const top = [...unmatched].slice(0, 30).join(', ');
-    console.log(`\nUnmatched names (${unmatched.size} total): ${top}`);
+    console.log(`\nUnmatched names (${unmatched.size}): ${[...unmatched].slice(0, 30).join(', ')}`);
   }
 
   writeStats(stats, [...processedSet], newMatches, new Date().toISOString());
