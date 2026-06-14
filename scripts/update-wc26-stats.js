@@ -122,7 +122,7 @@ async function main() {
     stats[name][field]++;
   };
 
-  // 1. List all finished matches
+  // 1. List all finished matches — this response already includes per-match goals
   console.log(`\nFetching finished ${COMP} matches from football-data.org...`);
   let matches;
   try {
@@ -139,36 +139,46 @@ async function main() {
     return;
   }
 
-  // 2. Fetch detail for each match (goals + lineups)
+  // 2. Process goals/assists from the list response directly (no extra API calls needed)
+  for (const m of matches) {
+    const label = `${m.homeTeam?.shortName || m.homeTeam?.name} ${m.score?.fullTime?.home ?? '?'}–${m.score?.fullTime?.away ?? '?'} ${m.awayTeam?.shortName || m.awayTeam?.name}`;
+    let goalCount = 0, assistCount = 0;
+    for (const g of (m.goals || [])) {
+      const scorer   = findPlayer(g.scorer?.name);
+      const assister = findPlayer(g.assist?.name);
+      if (scorer)   { bump(scorer,   'goals');   goalCount++;   }
+      if (assister) { bump(assister, 'assists'); assistCount++; }
+    }
+    console.log(`${label} — Goals matched: ${goalCount}  Assists matched: ${assistCount}`);
+  }
+
+  // 3. Fetch per-match detail for lineups (appearances)
+  //    Diagnose the response shape on the first match so we can see what keys are returned.
+  console.log('\nFetching match details for lineup/appearance data...');
   for (let i = 0; i < matches.length; i++) {
     const m = matches[i];
-    const label = `${m.homeTeam?.shortName || m.homeTeam?.name} ${m.score?.fullTime?.home ?? '?'}–${m.score?.fullTime?.away ?? '?'} ${m.awayTeam?.shortName || m.awayTeam?.name}`;
-    console.log(`[${i + 1}/${matches.length}] ${label}`);
-
     if (i > 0) await sleep(DELAY_MS);
 
     let detail;
     try {
       detail = await apiGet(`/matches/${m.id}`);
     } catch (e) {
-      console.warn(`  Skipping — ${e.message}`);
+      console.warn(`  [${i + 1}] Skipping detail — ${e.message}`);
       continue;
     }
 
-    // Goals and assists
-    let goalCount = 0, assistCount = 0;
-    for (const g of (detail.goals || [])) {
-      const scorer   = findPlayer(g.scorer?.name);
-      const assister = findPlayer(g.assist?.name);
-      if (scorer)   { bump(scorer,   'goals');   goalCount++;   }
-      if (assister) { bump(assister, 'assists'); assistCount++; }
+    // On the first match, log the top-level keys so we can see the response shape
+    if (i === 0) {
+      console.log('  Detail response keys:', Object.keys(detail));
+      const matchObj = detail.match || detail;
+      console.log('  goals length:', (matchObj.goals || []).length);
+      console.log('  lineups length:', (matchObj.lineups || []).length);
     }
 
-    // Appearances: starting XI players are definite.
-    // Substitutes list may include bench players who didn't play (API limitation on
-    // free tier); we include them but this may slightly overcount squad appearances.
+    // Handle both { goals, lineups } and { match: { goals, lineups } } response shapes
+    const matchObj = detail.match || detail;
     const appearedThisMatch = new Set();
-    for (const lineup of (detail.lineups || [])) {
+    for (const lineup of (matchObj.lineups || [])) {
       const allEntries = [...(lineup.startXI || []), ...(lineup.substitutes || [])];
       for (const entry of allEntries) {
         const name = findPlayer(entry.player?.name);
@@ -178,8 +188,10 @@ async function main() {
         }
       }
     }
-
-    console.log(`  Goals: ${goalCount}  Assists: ${assistCount}  Players logged: ${appearedThisMatch.size}`);
+    if (appearedThisMatch.size > 0) {
+      console.log(`  [${i + 1}] ${appearedThisMatch.size} players logged from lineups`);
+    }
+  }
   }
 
   writeStats(stats, matches.length, new Date().toISOString());
