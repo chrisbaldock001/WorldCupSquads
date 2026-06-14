@@ -28,8 +28,12 @@ if (!API_KEY) {
 
 // ── Load SQUADS via vm so we don't need module.exports ────────────────────────
 
-const squadsCode = fs.readFileSync(path.join(ROOT, 'squads.js'), 'utf8');
-const sandbox = {};
+// Strip `const`/`let`/`var` from the SQUADS declaration so the vm context
+// (which only exposes `var`-style globals, not block-scoped bindings) can
+// pick it up via the sandbox object.
+const squadsCode = fs.readFileSync(path.join(ROOT, 'squads.js'), 'utf8')
+  .replace(/\b(?:const|let|var)\s+SQUADS\s*=/, 'SQUADS =');
+const sandbox = { SQUADS: undefined };
 vm.createContext(sandbox);
 vm.runInContext(squadsCode, sandbox);
 const SQUADS = sandbox.SQUADS;
