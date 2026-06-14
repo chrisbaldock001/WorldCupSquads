@@ -246,7 +246,12 @@ async function main() {
     if (!wikitext) { console.log(`Group ${group}: page not found yet`); continue; }
 
     const blocks = findMatchBlocks(wikitext);
-    if (blocks.length === 0) { console.log(`Group ${group}: no match blocks found`); continue; }
+    if (blocks.length === 0) {
+      // Dump first 800 chars of wikitext so we can see which template format is in use
+      console.log(`Group ${group}: no match blocks found. Wikitext start:`);
+      console.log(wikitext.slice(0, 800).replace(/\n/g, ' ↵ '));
+      continue;
+    }
     console.log(`\nGroup ${group}: ${blocks.length} block(s) found`);
 
     // Diagnostic on first group's first block
