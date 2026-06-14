@@ -23,7 +23,7 @@ jobs:
 
       - name: Fetch and write player stats
         env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
         run: node scripts/update-wc26-stats.js
 
       - name: Commit updated stats if changed
