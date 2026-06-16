@@ -628,7 +628,7 @@ div.country-card .country-card__name {
 /* stats grid */
 .player-overlay__stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
   margin-top: 0.85rem;
 }
